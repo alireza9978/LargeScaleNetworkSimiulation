@@ -1,5 +1,7 @@
 package constants;
 
+import Models.FlowNumberSetting.NodeFlowNumber;
+import Models.FlowNumberSetting.SwitchFlowSetting;
 import Models.InfrastructureConnections.NodeConnection;
 import Models.InfrastructureConnections.ServerConnection;
 import Models.InfrastructureConnections.SwitchConnection;
@@ -76,6 +78,30 @@ public class NetworkStructureUtil {
                     Integer.parseInt(record.get(2))));
         }
         return serverConnections;
+    }
+
+    public static ArrayList<NodeFlowNumber> getNodeFlowNumber() {
+        List<CSVRecord> records = readCsv("/home/alireza/projects/java/largeScaleNetworkSimiulation/src/NetworkStructureFiles/flowsNode.csv");
+        assert records != null;
+        ArrayList<NodeFlowNumber> nodeFlowNumbers = new ArrayList<>();
+        for (CSVRecord record : records) {
+            nodeFlowNumbers.add(new NodeFlowNumber(Integer.parseInt(record.get(0)), Integer.parseInt(record.get(1))));
+        }
+        return nodeFlowNumbers;
+    }
+
+    public static ArrayList<SwitchFlowSetting> getSwitchFlowNumber() {
+        List<CSVRecord> records = readCsv("/home/alireza/projects/java/largeScaleNetworkSimiulation/src/NetworkStructureFiles/flowsSwitches.csv");
+        assert records != null;
+        ArrayList<SwitchFlowSetting> nodeFlowNumbers = new ArrayList<>();
+        for (int i = 0; i < SWITCH_COUNT; i++) {
+            nodeFlowNumbers.add(new SwitchFlowSetting(i));
+        }
+        for (CSVRecord record : records) {
+            nodeFlowNumbers.get(Integer.parseInt(record.get(1))).addCondition(Integer.parseInt(record.get(0)),
+                    Integer.parseInt(record.get(2)));
+        }
+        return nodeFlowNumbers;
     }
 }
 

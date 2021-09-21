@@ -3,9 +3,12 @@ package Models;
 import Models.InfrastructureConnections.NodeConnection;
 import Models.InfrastructureConnections.ServerConnection;
 import Models.InfrastructureConnections.SwitchConnection;
+import constants.Constants;
 import constants.NetworkStructureUtil;
 
 import java.util.ArrayList;
+
+import static constants.Constants.ONE_HOUR_CLOCK_COUNT;
 
 public class Network {
 
@@ -32,6 +35,7 @@ public class Network {
             for (int i = index; i < index + connection.getNodeCount(); i++) {
                 nodes[i].setConnection(switches[connection.getSwitchId()]);
             }
+            index = index + connection.getNodeCount();
         }
     }
 
@@ -61,6 +65,43 @@ public class Network {
     }
 
     public void simulate() {
+        Controller.setPath(this);
 
+        System.out.println("Class one count");
+        System.out.println(Constants.TOTAL_CLOCK_COUNT / Constants.CLASS_ONE_CYCLE);
+        System.out.println("Class two count");
+        System.out.println(Constants.TOTAL_CLOCK_COUNT / Constants.CLASS_TWO_CYCLE);
+
+        int hour = 0;
+        for (long clock = 0; clock < Constants.TOTAL_CLOCK_COUNT; clock++) {
+            for (Node node : nodes) {
+                node.simulate(clock);
+            }
+
+            if (clock % ONE_HOUR_CLOCK_COUNT == 0){
+                hour+=1;
+                System.out.println("hour = " + hour);
+            }
+
+        }
     }
+
+    public Node getNode(int id){
+        if (id < nodes.length)
+            return nodes[id];
+        return null;
+    }
+
+    public Switch getSwitch(int id){
+        if (id < switches.length)
+            return switches[id];
+        return null;
+    }
+
+    public Server getServer(int id){
+        if (id < servers.length)
+            return servers[id];
+        return null;
+    }
+
 }
