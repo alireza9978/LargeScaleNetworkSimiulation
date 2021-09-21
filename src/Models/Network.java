@@ -67,13 +67,12 @@ public class Network {
     public void simulate() {
         Controller.setPath(this);
 
-        System.out.println("Class one count");
-        System.out.println(Constants.TOTAL_CLOCK_COUNT / Constants.CLASS_ONE_CYCLE);
-        System.out.println("Class two count");
-        System.out.println(Constants.TOTAL_CLOCK_COUNT / Constants.CLASS_TWO_CYCLE);
+        System.out.println("link Speed in clock = " + Constants.LINK_SPEED_PER_CLOCK);
+        System.out.println("Class one count = " + Constants.SMALL_TOTAL_CLOCK_COUNT / Constants.CLASS_ONE_CYCLE);
+        System.out.println("Class two count = " + Constants.SMALL_TOTAL_CLOCK_COUNT / Constants.CLASS_TWO_CYCLE);
 
         int hour = 0;
-        for (long clock = 0; clock < Constants.TOTAL_CLOCK_COUNT; clock++) {
+        for (long clock = 0; clock < Constants.SMALL_TOTAL_CLOCK_COUNT; clock++) {
             for (Node node : nodes) {
                 node.simulate(clock);
             }
@@ -92,6 +91,11 @@ public class Network {
             }
 
         }
+
+        for (Server server: servers){
+            System.out.println(server.getTotalPacket());
+        }
+
     }
 
     public Node getNode(int id){

@@ -12,7 +12,7 @@ public class Switch implements Receiver {
     private final Buffer[] buffers;
     private int connectionsCount = 0;
     private Hashtable<Integer, Integer> routingSetting;
-    private final ArrayList<Packet> inputPackets = new ArrayList<>();
+    private ArrayList<Packet> inputPackets = new ArrayList<>();
 
     public Switch() {
         this.id = ID;
@@ -36,6 +36,7 @@ public class Switch implements Receiver {
                 buffers[targetBuffer].addPacket(packet);
             }
         }
+        inputPackets = new ArrayList<>();
     }
 
     public void simulate() {

@@ -9,6 +9,7 @@ public class Server implements Receiver {
     public final int id;
     private static int ID = 0;
     private final LinkedList<VirtualMachine> virtualMachines;
+    private int totalPacket = 0;
 
     public Server() {
         this.id = ID;
@@ -30,7 +31,10 @@ public class Server implements Receiver {
 
     @Override
     public void receive(Packet packet) {
-        System.out.println("new packet");
-        System.exit(0);
+        totalPacket++;
+    }
+
+    public int getTotalPacket() {
+        return totalPacket;
     }
 }

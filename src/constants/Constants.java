@@ -32,6 +32,7 @@ public class Constants {
     public static final int GCD_CLASSES_PACKET_SIZE = gcd(gcd(CLASS_ONE_SIZE, CLASS_TWO_SIZE), CLASS_THREE_SIZE);
     public static final long CLOCK_IN_SECOND = LINK_SPEED_IN_SECOND / GCD_CLASSES_PACKET_SIZE;
     public static final long TOTAL_CLOCK_COUNT = 24L * 60L * 60L * CLOCK_IN_SECOND;
+    public static final long SMALL_TOTAL_CLOCK_COUNT = 60L * 60L * CLOCK_IN_SECOND;
     public static final int LINK_SPEED_PER_CLOCK = GCD_CLASSES_PACKET_SIZE;
     public static final long ONE_HOUR_CLOCK_COUNT = 60L * 60L * CLOCK_IN_SECOND;
 
