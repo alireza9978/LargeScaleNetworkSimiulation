@@ -29,12 +29,19 @@ public class Switch implements Receiver {
         this.routingSetting = routingSetting;
     }
 
-    private void simulate(){
-        for (Packet packet: inputPackets) {
+    public void routeReceivedPackets() {
+        for (Packet packet : inputPackets) {
             Integer targetBuffer = routingSetting.get(packet.flowNumber);
             if (targetBuffer != null) {
                 buffers[targetBuffer].addPacket(packet);
             }
+        }
+    }
+
+    public void simulate() {
+        for (Buffer buffer : buffers) {
+            if (buffer != null)
+                buffer.simulate();
         }
     }
 

@@ -2,11 +2,11 @@ package Models;
 
 import constants.Constants;
 
-import java.util.PriorityQueue;
+import java.util.ArrayDeque;
 
 public class Buffer {
 
-    private final PriorityQueue<Packet> queue = new PriorityQueue<>();
+    private final ArrayDeque<Packet> queue = new ArrayDeque<>();
     private final Receiver receiver;
 
     private Packet sendingPacket;

@@ -78,6 +78,14 @@ public class Network {
                 node.simulate(clock);
             }
 
+            for (Switch aSwitch: switches){
+                aSwitch.routeReceivedPackets();
+            }
+
+            for (Switch aSwitch: switches){
+                aSwitch.simulate();
+            }
+
             if (clock % ONE_HOUR_CLOCK_COUNT == 0){
                 hour+=1;
                 System.out.println("hour = " + hour);

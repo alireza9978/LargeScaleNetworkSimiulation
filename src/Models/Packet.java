@@ -6,6 +6,12 @@ public class Packet {
     public final Node sender;
     public final int size;
 
+    public Packet(int flowNumber, Node sender, int size) {
+        this.flowNumber = flowNumber;
+        this.sender = sender;
+        this.size = size;
+    }
+
     public Packet(Node sender, int size) {
         this.sender = sender;
         this.size = size;

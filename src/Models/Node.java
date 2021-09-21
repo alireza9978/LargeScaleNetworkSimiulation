@@ -29,8 +29,8 @@ public class Node {
     }
 
     public void simulate(long clock) {
-        if (clock % type.getPeriod() == 0){
-            connection.receive(new Packet(this, type.getSize()));
+        if (clock % type.getPeriod() == 0) {
+            connection.receive(new Packet(flowNumber, this, type.getSize()));
         }
     }
 

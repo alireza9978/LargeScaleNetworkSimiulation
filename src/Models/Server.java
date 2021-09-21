@@ -30,6 +30,7 @@ public class Server implements Receiver {
 
     @Override
     public void receive(Packet packet) {
-
+        System.out.println("new packet");
+        System.exit(0);
     }
 }
