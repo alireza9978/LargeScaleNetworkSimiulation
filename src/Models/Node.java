@@ -6,8 +6,9 @@ public class Node {
 
     public final int id;
     private static int ID = 0;
-    private NodeType type;
+    private final NodeType type;
     private Switch connection;
+    private int flowNumber = -1;
 
     public Node() {
         this.id = ID;
@@ -27,9 +28,17 @@ public class Node {
         return type;
     }
 
-    public void simulate() {
-
+    public void simulate(long clock) {
+        if (clock % type.getPeriod() == 0){
+            connection.receive(new Packet(this, type.getSize()));
+        }
     }
 
+    public int getFlowNumber() {
+        return flowNumber;
+    }
 
+    public void setFlowNumber(int flowNumber) {
+        this.flowNumber = flowNumber;
+    }
 }

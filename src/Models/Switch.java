@@ -9,21 +9,15 @@ public class Switch implements Receiver {
 
     public final int id;
     private static int ID = 0;
-    private final ArrayList<Node> nodes;
     private final Buffer[] buffers;
     private int connectionsCount = 0;
     private Hashtable<Integer, Integer> routingSetting;
+    private final ArrayList<Packet> inputPackets = new ArrayList<>();
 
     public Switch() {
         this.id = ID;
         ID++;
-        nodes = new ArrayList<>();
         buffers = new Buffer[Constants.SWITCH_MAX_CONNECTION_COUNT];
-    }
-
-    public void addNode(Node node) {
-        if (node != null)
-            nodes.add(node);
     }
 
     public void connect(Receiver receiver, int port) {
@@ -35,12 +29,18 @@ public class Switch implements Receiver {
         this.routingSetting = routingSetting;
     }
 
+    private void simulate(){
+        for (Packet packet: inputPackets) {
+            Integer targetBuffer = routingSetting.get(packet.flowNumber);
+            if (targetBuffer != null) {
+                buffers[targetBuffer].addPacket(packet);
+            }
+        }
+    }
+
     @Override
     public void receive(Packet packet) {
-        Integer targetBuffer = routingSetting.get(packet.flowNumber);
-        if (targetBuffer != null){
-            buffers[targetBuffer].addPacket(packet);
-        }
+        inputPackets.add(packet);
     }
 
 

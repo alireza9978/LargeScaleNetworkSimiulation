@@ -7,7 +7,7 @@ public enum NodeType {
     health,
     traffic;
 
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     public static int getCount() {
         return 2;
@@ -44,5 +44,24 @@ public enum NodeType {
         return null;
     }
 
+    public int getPeriod(){
+        switch (this){
+            case health:
+                return Constants.CLASS_ONE_CYCLE;
+            case traffic:
+                return Constants.CLASS_TWO_CYCLE;
+        }
+        return -1;
+    }
+
+    public int getSize(){
+        switch (this){
+            case health:
+                return Constants.CLASS_ONE_SIZE;
+            case traffic:
+                return Constants.CLASS_TWO_SIZE;
+        }
+        return -1;
+    }
 
 }
