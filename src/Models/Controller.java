@@ -18,7 +18,6 @@ public class Controller {
         for (SwitchFlowSetting temp : switchesFlow) {
             network.getSwitch(temp.getSwitchId()).updateRoutingSetting(temp.getSetting());
         }
-
     }
 
 }

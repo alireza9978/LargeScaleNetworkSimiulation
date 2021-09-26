@@ -2,13 +2,14 @@ package Models;
 
 import constants.NodeType;
 
-public class Node {
+public class Node implements Runnable {
 
     public final int id;
     private static int ID = 0;
     private final NodeType type;
     private Switch connection;
     private int flowNumber = -1;
+    private long clock = 0;
 
     public Node() {
         this.id = ID;
@@ -28,17 +29,19 @@ public class Node {
         return type;
     }
 
-    public void simulate(long clock) {
-        if (clock % type.getPeriod() == 0) {
-            connection.receive(new Packet(flowNumber, this, type.getSize()));
-        }
-    }
-
     public int getFlowNumber() {
         return flowNumber;
     }
 
     public void setFlowNumber(int flowNumber) {
         this.flowNumber = flowNumber;
+    }
+
+    @Override
+    public void run() {
+        if (clock % type.getPeriod() == 0) {
+            connection.receive(new Packet(flowNumber, this, type.getSize()));
+        }
+        clock++;
     }
 }

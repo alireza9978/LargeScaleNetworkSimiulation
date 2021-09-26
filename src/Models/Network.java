@@ -7,6 +7,7 @@ import constants.Constants;
 import constants.NetworkStructureUtil;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import static constants.Constants.ONE_HOUR_CLOCK_COUNT;
 
@@ -67,50 +68,63 @@ public class Network {
     public void simulate() {
         Controller.setPath(this);
 
+        for (Switch aSwitch : switches) {
+            if (!aSwitch.checkSetting()) {
+                System.out.println("switch setting error");
+                return;
+            }
+        }
+
         System.out.println("link Speed in clock = " + Constants.LINK_SPEED_PER_CLOCK);
         System.out.println("Class one count = " + Constants.SMALL_TOTAL_CLOCK_COUNT / Constants.CLASS_ONE_CYCLE);
         System.out.println("Class two count = " + Constants.SMALL_TOTAL_CLOCK_COUNT / Constants.CLASS_TWO_CYCLE);
 
+        long start = System.currentTimeMillis();
         int hour = 0;
+
         for (long clock = 0; clock < Constants.SMALL_TOTAL_CLOCK_COUNT; clock++) {
+
             for (Node node : nodes) {
-                node.simulate(clock);
+                node.run();
             }
 
-            for (Switch aSwitch: switches){
+            for (Switch aSwitch : switches) {
                 aSwitch.routeReceivedPackets();
             }
 
-            for (Switch aSwitch: switches){
-                aSwitch.simulate();
+            for (Switch aSwitch : switches) {
+                aSwitch.run();
             }
 
-            if (clock % ONE_HOUR_CLOCK_COUNT == 0){
-                hour+=1;
+            if (clock % ONE_HOUR_CLOCK_COUNT == 0) {
+                hour += 1;
                 System.out.println("hour = " + hour);
+                System.gc();
             }
 
         }
+        System.out.println("run time = " +
+                TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds");
 
-        for (Server server: servers){
+        for (Server server : servers) {
             System.out.println(server.getTotalPacket());
         }
 
     }
 
-    public Node getNode(int id){
+    public Node getNode(int id) {
         if (id < nodes.length)
             return nodes[id];
         return null;
     }
 
-    public Switch getSwitch(int id){
+    public Switch getSwitch(int id) {
         if (id < switches.length)
             return switches[id];
         return null;
     }
 
-    public Server getServer(int id){
+    public Server getServer(int id) {
         if (id < servers.length)
             return servers[id];
         return null;
