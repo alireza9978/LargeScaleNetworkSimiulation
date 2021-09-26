@@ -20,7 +20,7 @@ public class Constants {
     // classes packets size in b
     public static final int CLASS_ONE_SIZE = 1000;
     public static final int CLASS_TWO_SIZE = 2000;
-    public static final int CLASS_THREE_SIZE = 3500;
+    public static final int CLASS_THREE_SIZE = 4000;
 
     // classes packets count in second
     public static final int CLASS_ONE_COUNT = 10;

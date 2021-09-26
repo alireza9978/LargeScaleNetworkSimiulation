@@ -7,9 +7,11 @@ import constants.Constants;
 import constants.NetworkStructureUtil;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static constants.Constants.ONE_HOUR_CLOCK_COUNT;
+import static constants.Constants.SMALL_TOTAL_CLOCK_COUNT;
 
 public class Network {
 
@@ -81,20 +83,14 @@ public class Network {
 
         long start = System.currentTimeMillis();
         int hour = 0;
-
+        System.out.println("total clock = " + SMALL_TOTAL_CLOCK_COUNT);
         for (long clock = 0; clock < Constants.SMALL_TOTAL_CLOCK_COUNT; clock++) {
 
-            for (Node node : nodes) {
-                node.run();
-            }
+            Arrays.stream(nodes).forEachOrdered(Node::run);
 
-            for (Switch aSwitch : switches) {
-                aSwitch.routeReceivedPackets();
-            }
+            Arrays.stream(switches).forEachOrdered(Switch::routeReceivedPackets);
 
-            for (Switch aSwitch : switches) {
-                aSwitch.run();
-            }
+            Arrays.stream(switches).forEachOrdered(Switch::run);
 
             if (clock % ONE_HOUR_CLOCK_COUNT == 0) {
                 hour += 1;
@@ -106,9 +102,7 @@ public class Network {
         System.out.println("run time = " +
                 TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds");
 
-        for (Server server : servers) {
-            System.out.println(server.getTotalPacket());
-        }
+        Arrays.stream(servers).mapToInt(Server::getTotalPacket).forEachOrdered(System.out::println);
 
     }
 
