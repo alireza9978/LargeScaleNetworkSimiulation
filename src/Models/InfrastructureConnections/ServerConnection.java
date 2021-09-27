@@ -2,9 +2,9 @@ package Models.InfrastructureConnections;
 
 public class ServerConnection {
 
-    private int id;
-    private int switchId;
-    private int port;
+    private final int id;
+    private final int switchId;
+    private final int port;
 
     public ServerConnection(int id, int switchId, int port) {
         this.id = id;

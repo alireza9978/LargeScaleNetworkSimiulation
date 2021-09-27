@@ -64,4 +64,15 @@ public enum NodeType {
         return -1;
     }
 
+    public int toInt(){
+        switch (this){
+            case health:
+                return 0;
+            case traffic:
+                return 1;
+        }
+        return -1;
+    }
+
+
 }

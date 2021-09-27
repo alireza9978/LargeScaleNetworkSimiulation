@@ -3,8 +3,10 @@ package Models;
 import Models.InfrastructureConnections.NodeConnection;
 import Models.InfrastructureConnections.ServerConnection;
 import Models.InfrastructureConnections.SwitchConnection;
+import Models.InfrastructureConnections.VirtualMachineConnection;
 import constants.Constants;
 import constants.NetworkStructureUtil;
+import constants.NodeType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,6 +26,13 @@ public class Network {
         connectSwitches(NetworkStructureUtil.getSwitchesStructure());
         connectNodes(NetworkStructureUtil.getNodeStructure());
         connectServers(NetworkStructureUtil.getServerStructure());
+        startVirtualMachines(NetworkStructureUtil.getVirtualMachinesStructure());
+    }
+
+    private void startVirtualMachines(ArrayList<VirtualMachineConnection> virtualMachineConnections) {
+        for (VirtualMachineConnection connection : virtualMachineConnections) {
+            servers[connection.getServerId()].addVM(new VirtualMachine(NodeType.getInstance(connection.getVirtualMachineType()), connection.getServerPort()));
+        }
     }
 
     private void connectServers(ArrayList<ServerConnection> serverConnections) {
@@ -92,6 +101,8 @@ public class Network {
 
             Arrays.stream(switches).forEachOrdered(Switch::run);
 
+            Arrays.stream(servers).forEachOrdered(Server::run);
+
             if (clock % ONE_HOUR_CLOCK_COUNT == 0) {
                 hour += 1;
                 System.out.println("hour = " + hour);
@@ -102,7 +113,7 @@ public class Network {
         System.out.println("run time = " +
                 TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds");
 
-        Arrays.stream(servers).mapToInt(Server::getTotalPacket).forEachOrdered(System.out::println);
+        Arrays.stream(servers).map(Server::toString).forEachOrdered(System.out::println);
 
     }
 

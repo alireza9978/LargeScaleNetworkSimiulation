@@ -1,11 +1,9 @@
 package Models.InfrastructureConnections;
 
-import constants.NodeType;
-
 public class NodeConnection {
 
-    private int switchId;
-    private int nodeCount;
+    private final int switchId;
+    private final int nodeCount;
 
     public NodeConnection(int switchId, int nodeCount) {
         this.switchId = switchId;

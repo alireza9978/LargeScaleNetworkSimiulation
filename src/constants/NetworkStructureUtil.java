@@ -5,6 +5,7 @@ import Models.FlowNumberSetting.SwitchFlowSetting;
 import Models.InfrastructureConnections.NodeConnection;
 import Models.InfrastructureConnections.ServerConnection;
 import Models.InfrastructureConnections.SwitchConnection;
+import Models.InfrastructureConnections.VirtualMachineConnection;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -66,6 +67,17 @@ public class NetworkStructureUtil {
             nodeConnections.add(new NodeConnection(Integer.parseInt(record.get(0)), switchNodeCount[i]));
         }
         return nodeConnections;
+    }
+
+    public static ArrayList<VirtualMachineConnection> getVirtualMachinesStructure() {
+        List<CSVRecord> records = readCsv("/home/alireza/projects/java/largeScaleNetworkSimiulation/src/NetworkStructureFiles/vm.csv");
+        assert records != null;
+        ArrayList<VirtualMachineConnection> virtualMachineConnections = new ArrayList<>();
+        for (CSVRecord record : records) {
+            virtualMachineConnections.add(new VirtualMachineConnection(Integer.parseInt(record.get(0)),
+                    Integer.parseInt(record.get(1)), Integer.parseInt(record.get(2)), record.get(3)));
+        }
+        return virtualMachineConnections;
     }
 
 
