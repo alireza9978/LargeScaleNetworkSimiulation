@@ -87,8 +87,6 @@ public class Network {
         }
 
         System.out.println("link Speed in clock = " + Constants.LINK_SPEED_PER_CLOCK);
-        System.out.println("Class one count = " + Constants.SMALL_TOTAL_CLOCK_COUNT / Constants.CLASS_ONE_CYCLE);
-        System.out.println("Class two count = " + Constants.SMALL_TOTAL_CLOCK_COUNT / Constants.CLASS_TWO_CYCLE);
 
         long start = System.currentTimeMillis();
         int hour = 0;

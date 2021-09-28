@@ -28,7 +28,7 @@ public class Constants {
     public static final int CLASS_THREE_COUNT = 5;
 
     // link speed 10Mb/s
-    public static final long LINK_SPEED_IN_SECOND = 10000000L;
+    public static final long LINK_SPEED_IN_SECOND = 10_000_000L;
     public static final int GCD_CLASSES_PACKET_SIZE = gcd(gcd(CLASS_ONE_SIZE, CLASS_TWO_SIZE), CLASS_THREE_SIZE);
     public static final long CLOCK_IN_SECOND = LINK_SPEED_IN_SECOND / GCD_CLASSES_PACKET_SIZE;
     public static final long TOTAL_CLOCK_COUNT = 24L * 60L * 60L * CLOCK_IN_SECOND;
