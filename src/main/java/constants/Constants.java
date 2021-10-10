@@ -11,6 +11,7 @@ public class Constants {
 
     public static final int SWITCH_MAX_CONNECTION_COUNT = 32;
     public static final int SERVER_MAX_VM_COUNT = 10;
+    public static final int SERVER_MAX_PROCESSING_PACKET_IN_HOUR = 100000;
 
     // packets that each vm can process in a single cycle
     public static final int MAX_VM_PACKET_COUNT_PROCESS_SPEED = 10000;
@@ -40,6 +41,8 @@ public class Constants {
     public static final int CLASS_ONE_CYCLE = (int) CLOCK_IN_SECOND / CLASS_ONE_COUNT;
     public static final int CLASS_TWO_CYCLE = (int) CLOCK_IN_SECOND / CLASS_TWO_COUNT;
     public static final int CLASS_THREE_CYCLE = (int) CLOCK_IN_SECOND / CLASS_THREE_COUNT;
+
+    public static final String FIGURE_DIR = "src/main/resources/figures/";
 
     // Recursive function to return gcd of a and b
     static int gcd(int a, int b) {

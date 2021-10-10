@@ -12,6 +12,9 @@ public class Switch implements Receiver, Runnable {
     private final Buffer[] buffers;
     private Hashtable<Integer, Integer> routingSetting = null;
     private ArrayList<Packet> inputPackets = new ArrayList<>();
+    private int inputPacketsCount = 0;
+    private int sumPacketCountInQueue = 0;
+    private int clockForAverage = 0;
 
     public Switch() {
         this.id = ID;
@@ -31,8 +34,8 @@ public class Switch implements Receiver, Runnable {
         this.routingSetting = routingSetting;
     }
 
-
     public void routeReceivedPackets() {
+        inputPacketsCount += inputPackets.size();
         for (Packet packet : inputPackets) {
             if (packet != null) {
                 Integer targetBuffer = routingSetting.get(packet.flowNumber);
@@ -59,8 +62,24 @@ public class Switch implements Receiver, Runnable {
     @Override
     public void run() {
         for (Buffer buffer : buffers) {
-            if (buffer != null)
+            if (buffer != null) {
                 buffer.simulate();
+                sumPacketCountInQueue += buffer.packetInQueue();
+            }
         }
+        clockForAverage++;
+    }
+
+    public int getInputPacketsCount() {
+        int temp = inputPacketsCount;
+        inputPacketsCount = 0;
+        return temp;
+    }
+
+    public Float getQueuePacketsCount() {
+        float temp = (float) sumPacketCountInQueue / (float) clockForAverage;
+        sumPacketCountInQueue = 0;
+        clockForAverage = 0;
+        return temp;
     }
 }

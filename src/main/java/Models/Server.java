@@ -10,7 +10,8 @@ public class Server implements Receiver {
     private static int ID = 0;
     private final VirtualMachine[] virtualMachines;
     private int virtualMachinesCount = 0;
-    private int totalPacket = 0;
+    private long totalPacket = 0;
+    private long totalPacketUntilLastHour = 0;
 
     public Server() {
         this.id = ID;
@@ -42,9 +43,9 @@ public class Server implements Receiver {
         totalPacket++;
     }
 
-    public void run(){
-        for (VirtualMachine virtualMachine: virtualMachines){
-            if (virtualMachine != null){
+    public void run() {
+        for (VirtualMachine virtualMachine : virtualMachines) {
+            if (virtualMachine != null) {
                 virtualMachine.simulate();
             }
         }
@@ -58,7 +59,13 @@ public class Server implements Receiver {
                 '}';
     }
 
-    public int getTotalPacket() {
+    public long getTotalPacket() {
         return totalPacket;
+    }
+
+    public Float getUtilization() {
+        float temp = (float) (totalPacket - totalPacketUntilLastHour) / (float) Constants.SERVER_MAX_PROCESSING_PACKET_IN_HOUR;
+        totalPacketUntilLastHour = totalPacket;
+        return temp;
     }
 }

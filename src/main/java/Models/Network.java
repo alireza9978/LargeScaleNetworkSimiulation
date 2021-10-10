@@ -4,6 +4,7 @@ import Models.InfrastructureConnections.NodeConnection;
 import Models.InfrastructureConnections.ServerConnection;
 import Models.InfrastructureConnections.SwitchConnection;
 import Models.InfrastructureConnections.VirtualMachineConnection;
+import Visualization.Visualization;
 import constants.Constants;
 import constants.NetworkStructureUtil;
 import constants.NodeType;
@@ -12,8 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-import static constants.Constants.ONE_HOUR_CLOCK_COUNT;
-import static constants.Constants.SMALL_TOTAL_CLOCK_COUNT;
+import static constants.Constants.*;
 
 public class Network {
 
@@ -91,7 +91,8 @@ public class Network {
         long start = System.currentTimeMillis();
         int hour = 0;
         System.out.println("total clock = " + SMALL_TOTAL_CLOCK_COUNT);
-        for (long clock = 0; clock < Constants.SMALL_TOTAL_CLOCK_COUNT; clock++) {
+        Visualization visualization = new Visualization(hour);;
+        for (long clock = 1; clock <= Constants.SMALL_TOTAL_CLOCK_COUNT; clock++) {
 
             Arrays.stream(nodes).forEachOrdered(Node::run);
 
@@ -103,11 +104,19 @@ public class Network {
 
             if (clock % ONE_HOUR_CLOCK_COUNT == 0) {
                 hour += 1;
+                visualization.plot();
+                visualization = new Visualization(hour);
                 System.out.println("hour = " + hour);
                 System.gc();
             }
 
+            if (clock % CLOCK_IN_SECOND == 0){
+                System.out.println("second = " + clock / CLOCK_IN_SECOND);
+                visualization.getData(this);
+            }
+
         }
+
         System.out.println("run time = " +
                 TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds");
 

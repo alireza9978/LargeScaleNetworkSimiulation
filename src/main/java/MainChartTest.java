@@ -1,9 +1,12 @@
+import constants.Constants;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
 
 import java.io.IOException;
+
+import static constants.Constants.FIGURE_DIR;
 
 public class MainChartTest {
 
@@ -15,15 +18,13 @@ public class MainChartTest {
         // Create Chart
         XYChart chart = QuickChart.getChart("Sample Chart", "X", "Y", "y(x)", xData, yData);
 
-        // Show it
-        new SwingWrapper<>(chart).displayChart();
-
         try {
             // Save it
-            BitmapEncoder.saveBitmap(chart, "./Sample_Chart", BitmapEncoder.BitmapFormat.PNG);
+            BitmapEncoder.saveBitmap(chart, FIGURE_DIR + "Sample_Chart", BitmapEncoder.BitmapFormat.PNG);
 
             // or save it in high-res
-            BitmapEncoder.saveBitmapWithDPI(chart, "./Sample_Chart_300_DPI", BitmapEncoder.BitmapFormat.PNG, 300);
+            BitmapEncoder.saveBitmapWithDPI(chart, FIGURE_DIR + "Sample_Chart_300_DPI",
+                    BitmapEncoder.BitmapFormat.PNG, 300);
         } catch (IOException e) {
             e.printStackTrace();
         }

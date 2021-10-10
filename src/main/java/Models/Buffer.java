@@ -42,4 +42,8 @@ public class Buffer {
         }
     }
 
+    public int packetInQueue(){
+        return queue.size();
+    }
+
 }

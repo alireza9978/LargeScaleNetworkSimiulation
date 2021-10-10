@@ -34,7 +34,7 @@ public class NetworkStructureUtil {
     }
 
     public static ArrayList<SwitchConnection> getSwitchesStructure() {
-        List<CSVRecord> records = readCsv("/home/alireza/projects/java/largeScaleNetworkSimiulation/src/NetworkStructureFiles/switches.csv");
+        List<CSVRecord> records = readCsv("/home/alireza/projects/java/largeScaleNetworkSimiulation/src/main/java/NetworkStructureFiles/switches.csv");
         ArrayList<SwitchConnection> switchConnections = new ArrayList<>();
         assert records != null;
         for (CSVRecord record : records) {
@@ -45,7 +45,7 @@ public class NetworkStructureUtil {
     }
 
     public static ArrayList<NodeConnection> getNodeStructure() {
-        List<CSVRecord> records = readCsv("/home/alireza/projects/java/largeScaleNetworkSimiulation/src/NetworkStructureFiles/edgesSwitches.csv");
+        List<CSVRecord> records = readCsv("/home/alireza/projects/java/largeScaleNetworkSimiulation/src/main/java/NetworkStructureFiles/edgesSwitches.csv");
         assert records != null;
 
         Random random = new Random();
@@ -70,7 +70,7 @@ public class NetworkStructureUtil {
     }
 
     public static ArrayList<VirtualMachineConnection> getVirtualMachinesStructure() {
-        List<CSVRecord> records = readCsv("/home/alireza/projects/java/largeScaleNetworkSimiulation/src/NetworkStructureFiles/vm.csv");
+        List<CSVRecord> records = readCsv("/home/alireza/projects/java/largeScaleNetworkSimiulation/src/main/java/NetworkStructureFiles/vm.csv");
         assert records != null;
         ArrayList<VirtualMachineConnection> virtualMachineConnections = new ArrayList<>();
         for (CSVRecord record : records) {
@@ -82,7 +82,7 @@ public class NetworkStructureUtil {
 
 
     public static ArrayList<ServerConnection> getServerStructure() {
-        List<CSVRecord> records = readCsv("/home/alireza/projects/java/largeScaleNetworkSimiulation/src/NetworkStructureFiles/servers.csv");
+        List<CSVRecord> records = readCsv("/home/alireza/projects/java/largeScaleNetworkSimiulation/src/main/java/NetworkStructureFiles/servers.csv");
         assert records != null;
         ArrayList<ServerConnection> serverConnections = new ArrayList<>();
         for (CSVRecord record : records) {
@@ -93,7 +93,7 @@ public class NetworkStructureUtil {
     }
 
     public static ArrayList<NodeFlowNumber> getNodeFlowNumber() {
-        List<CSVRecord> records = readCsv("/home/alireza/projects/java/largeScaleNetworkSimiulation/src/NetworkStructureFiles/flowsNode.csv");
+        List<CSVRecord> records = readCsv("/home/alireza/projects/java/largeScaleNetworkSimiulation/src/main/java/NetworkStructureFiles/flowsNode.csv");
         assert records != null;
         ArrayList<NodeFlowNumber> nodeFlowNumbers = new ArrayList<>();
         for (CSVRecord record : records) {
@@ -103,7 +103,7 @@ public class NetworkStructureUtil {
     }
 
     public static ArrayList<SwitchFlowSetting> getSwitchFlowNumber() {
-        List<CSVRecord> records = readCsv("/home/alireza/projects/java/largeScaleNetworkSimiulation/src/NetworkStructureFiles/flowsSwitches.csv");
+        List<CSVRecord> records = readCsv("/home/alireza/projects/java/largeScaleNetworkSimiulation/src/main/java/NetworkStructureFiles/flowsSwitches.csv");
         assert records != null;
         ArrayList<SwitchFlowSetting> nodeFlowNumbers = new ArrayList<>();
         for (int i = 0; i < SWITCH_COUNT; i++) {
