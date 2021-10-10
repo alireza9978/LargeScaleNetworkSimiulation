@@ -5,6 +5,7 @@ import constants.NodeType;
 public class Node implements Runnable {
 
     public final int id;
+    private boolean on = false;
     private static int ID = 0;
     private final NodeType type;
     private Switch connection;
@@ -15,6 +16,14 @@ public class Node implements Runnable {
         this.id = ID;
         ID++;
         type = NodeType.getInstanceRandom();
+    }
+
+    public boolean isOn() {
+        return on;
+    }
+
+    public void setOn(boolean on) {
+        this.on = on;
     }
 
     public Switch getConnection() {
@@ -39,8 +48,10 @@ public class Node implements Runnable {
 
     @Override
     public void run() {
-        if (clock % type.getPeriod() == 0) {
-            connection.receive(new Packet(flowNumber, this, type.getSize()));
+        if (isOn()) {
+            if (clock % type.getPeriod() == 0) {
+                connection.receive(new Packet(flowNumber, this, type.getSize()));
+            }
         }
         clock++;
     }

@@ -2,19 +2,19 @@ package constants;
 
 import Models.FlowNumberSetting.NodeFlowNumber;
 import Models.FlowNumberSetting.SwitchFlowSetting;
-import Models.InfrastructureConnections.NodeConnection;
-import Models.InfrastructureConnections.ServerConnection;
-import Models.InfrastructureConnections.SwitchConnection;
-import Models.InfrastructureConnections.VirtualMachineConnection;
+import Models.InfrastructureConnections.*;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVPrinter;
 import org.apache.commons.csv.CSVRecord;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -31,6 +31,18 @@ public class NetworkStructureUtil {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    public static ArrayList<NodeActivation> getActiveNodesStructure() {
+        String path = "/home/alireza/projects/java/largeScaleNetworkSimiulation/src/main/java/NetworkStructureFiles/activeNode.csv";
+        List<CSVRecord> records = readCsv(path);
+        ArrayList<NodeActivation> nodeActivations = new ArrayList<>();
+        assert records != null;
+        for (CSVRecord record : records) {
+            nodeActivations.add(new NodeActivation(Integer.parseInt(record.get(2)), Integer.parseInt(record.get(0))));
+        }
+        return nodeActivations;
     }
 
     public static ArrayList<SwitchConnection> getSwitchesStructure() {

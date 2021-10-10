@@ -5,6 +5,7 @@ public class Constants {
     public static final int SERVER_COUNT = 1;
     public static final int SWITCH_COUNT = 6;
     public static final int NODE_COUNT = 60;
+    public static final int MINIMUM_ACTIVE_NODE_COUNT = 10;
     public static final int EDGE_SWITCH_COUNT = 3;
     public static final int EDGE_SWITCH_NODE_COUNT = NODE_COUNT / EDGE_SWITCH_COUNT;
     public static final int NODE_COUNT_TOLERANCE = 5;
@@ -36,6 +37,8 @@ public class Constants {
     public static final long SMALL_TOTAL_CLOCK_COUNT = 60L * 60L * CLOCK_IN_SECOND;
     public static final int LINK_SPEED_PER_CLOCK = GCD_CLASSES_PACKET_SIZE;
     public static final long ONE_HOUR_CLOCK_COUNT = 60L * 60L * CLOCK_IN_SECOND;
+    public static final long HALF_HOUR_CLOCK_COUNT = 30L * 60L * CLOCK_IN_SECOND;
+    public static final long TEN_MINUTE_CLOCK_COUNT = 10L * 60L * CLOCK_IN_SECOND;
 
     // classes packets generation speed in clock
     public static final int CLASS_ONE_CYCLE = (int) CLOCK_IN_SECOND / CLASS_ONE_COUNT;

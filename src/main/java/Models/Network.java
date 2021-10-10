@@ -1,9 +1,6 @@
 package Models;
 
-import Models.InfrastructureConnections.NodeConnection;
-import Models.InfrastructureConnections.ServerConnection;
-import Models.InfrastructureConnections.SwitchConnection;
-import Models.InfrastructureConnections.VirtualMachineConnection;
+import Models.InfrastructureConnections.*;
 import Visualization.Visualization;
 import constants.Constants;
 import constants.NetworkStructureUtil;
@@ -11,6 +8,7 @@ import constants.NodeType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import static constants.Constants.*;
@@ -20,6 +18,8 @@ public class Network {
     private Server[] servers;
     private Switch[] switches;
     private Node[] nodes;
+    private final ArrayList<Node> deactivateNodes = new ArrayList<>();
+    private final NodeActivation[] nodeActivations;
 
     public Network(int serverCount, int switchCount, int nodeCount) {
         initialize(serverCount, switchCount, nodeCount);
@@ -27,6 +27,7 @@ public class Network {
         connectNodes(NetworkStructureUtil.getNodeStructure());
         connectServers(NetworkStructureUtil.getServerStructure());
         startVirtualMachines(NetworkStructureUtil.getVirtualMachinesStructure());
+        nodeActivations = NetworkStructureUtil.getActiveNodesStructure().toArray(new NodeActivation[0]);
     }
 
     private void startVirtualMachines(ArrayList<VirtualMachineConnection> virtualMachineConnections) {
@@ -72,8 +73,17 @@ public class Network {
 
         for (int i = 0; i < nodeCount; i++) {
             nodes[i] = new Node();
+            deactivateNodes.add(nodes[i]);
         }
+        activateRandomNode(Constants.MINIMUM_ACTIVE_NODE_COUNT);
+    }
 
+    public void activateRandomNode(int count) {
+        Random random = new Random();
+        for (int i = 0; i < count; i++) {
+            Node node = deactivateNodes.remove(random.nextInt(deactivateNodes.size()));
+            node.setOn(true);
+        }
     }
 
     public void simulate() {
@@ -90,8 +100,10 @@ public class Network {
 
         long start = System.currentTimeMillis();
         int hour = 0;
+        int activationPointer = 0;
         System.out.println("total clock = " + SMALL_TOTAL_CLOCK_COUNT);
-        Visualization visualization = new Visualization(hour);;
+        Visualization visualization = new Visualization(hour);
+        ;
         for (long clock = 1; clock <= Constants.SMALL_TOTAL_CLOCK_COUNT; clock++) {
 
             Arrays.stream(nodes).forEachOrdered(Node::run);
@@ -102,6 +114,15 @@ public class Network {
 
             Arrays.stream(servers).forEachOrdered(Server::run);
 
+            if (clock % TEN_MINUTE_CLOCK_COUNT == 0) {
+                System.out.println("second = " + clock / CLOCK_IN_SECOND);
+                if (activationPointer < nodeActivations.length)
+                    if (nodeActivations[activationPointer].getTime() == clock) {
+                        activateRandomNode(nodeActivations[activationPointer].getToActivate());
+                        activationPointer++;
+                    }
+            }
+
             if (clock % ONE_HOUR_CLOCK_COUNT == 0) {
                 hour += 1;
                 visualization.plot();
@@ -110,8 +131,7 @@ public class Network {
                 System.gc();
             }
 
-            if (clock % CLOCK_IN_SECOND == 0){
-                System.out.println("second = " + clock / CLOCK_IN_SECOND);
+            if (clock % CLOCK_IN_SECOND == 0) {
                 visualization.getData(this);
             }
 
