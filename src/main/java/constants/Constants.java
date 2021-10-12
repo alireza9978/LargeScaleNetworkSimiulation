@@ -45,7 +45,8 @@ public class Constants {
     public static final int CLASS_TWO_CYCLE = (int) CLOCK_IN_SECOND / CLASS_TWO_COUNT;
     public static final int CLASS_THREE_CYCLE = (int) CLOCK_IN_SECOND / CLASS_THREE_COUNT;
 
-    public static final String FIGURE_DIR = "src/main/resources/figures/";
+    public static final String FIGURE_DIR = "src/main/resources/charts/";
+    public static final String GRAPH_DIR = "src/main/resources/graphs/";
 
     // Recursive function to return gcd of a and b
     static int gcd(int a, int b) {
