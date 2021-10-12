@@ -58,6 +58,7 @@ public class Network {
     private void connectSwitches(ArrayList<SwitchConnection> switchConnections) {
         for (SwitchConnection connection : switchConnections) {
             switches[connection.getStart()].connect(switches[connection.getEnd()], connection.getStartPort());
+            switches[connection.getEnd()].connect(switches[connection.getStart()], connection.getEndPort());
         }
     }
 
