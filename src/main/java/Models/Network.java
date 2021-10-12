@@ -18,10 +18,13 @@ public class Network {
     private Server[] servers;
     private Switch[] switches;
     private Node[] nodes;
+    private final long[] activeNodeCount;
     private final ArrayList<Node> deactivateNodes = new ArrayList<>();
+    private final ArrayList<Node> activateNodes = new ArrayList<>();
     private final NodeActivation[] nodeActivations;
 
     public Network(int serverCount, int switchCount, int nodeCount) {
+        activeNodeCount = new long[NodeType.getCount()];
         initialize(serverCount, switchCount, nodeCount);
         connectSwitches(NetworkStructureUtil.getSwitchesStructure());
         connectNodes(NetworkStructureUtil.getNodeStructure());
@@ -82,7 +85,19 @@ public class Network {
         Random random = new Random();
         for (int i = 0; i < count; i++) {
             Node node = deactivateNodes.remove(random.nextInt(deactivateNodes.size()));
+            activeNodeCount[node.getType().toInt()]++;
             node.setOn(true);
+            activateNodes.add(node);
+        }
+    }
+
+    public void deactivateRandomNode(int count) {
+        Random random = new Random();
+        for (int i = 0; i < count; i++) {
+            Node node = activateNodes.remove(random.nextInt(deactivateNodes.size()));
+            activeNodeCount[node.getType().toInt()]--;
+            node.setOn(false);
+            deactivateNodes.add(node);
         }
     }
 
@@ -103,7 +118,7 @@ public class Network {
         int activationPointer = 0;
         System.out.println("total clock = " + SMALL_TOTAL_CLOCK_COUNT);
         Visualization visualization = new Visualization(hour);
-        ;
+
         for (long clock = 1; clock <= Constants.SMALL_TOTAL_CLOCK_COUNT; clock++) {
 
             Arrays.stream(nodes).forEachOrdered(Node::run);
@@ -160,6 +175,10 @@ public class Network {
         if (id < servers.length)
             return servers[id];
         return null;
+    }
+
+    public long getActiveNodeCount(int type) {
+        return activeNodeCount[type];
     }
 
 }

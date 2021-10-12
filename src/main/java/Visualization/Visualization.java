@@ -3,6 +3,7 @@ package Visualization;
 import Models.Network;
 import Models.Server;
 import Models.Switch;
+import constants.NodeType;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.XYChart;
@@ -20,6 +21,7 @@ public class Visualization {
     private final ArrayList<Integer>[] switchesInputPackets = new ArrayList[SWITCH_COUNT];
     private final ArrayList<Float>[] switchesQueuePackets = new ArrayList[SWITCH_COUNT];
     private final ArrayList<Float>[] serverUtilization = new ArrayList[SERVER_COUNT];
+    private final ArrayList<Long> activeNodeCount = new ArrayList<>();
 
     public Visualization(int hour) {
         this.hour = hour;
@@ -44,6 +46,11 @@ public class Visualization {
             Server s = network.getServer(i);
             serverUtilization[i].add(s.getUtilization());
         }
+        long total = 0;
+        for (int i = 0; i < NodeType.getCount(); i++) {
+            total += network.getActiveNodeCount(i);
+        }
+        activeNodeCount.add(total);
     }
 
     public void plot() {
@@ -80,6 +87,16 @@ public class Visualization {
                 e.printStackTrace();
             }
         }
+        XYChart queuePacketChart = QuickChart.getChart("Active Node Count in " + hour + "H", "Time", "Node Count",
+                "all node type", xAxis, activeNodeCount);
+
+        try {
+            BitmapEncoder.saveBitmapWithDPI(queuePacketChart, FIGURE_DIR + "nodes/activeNodeCount_hour_" + hour,
+                    BitmapEncoder.BitmapFormat.PNG, 300);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
