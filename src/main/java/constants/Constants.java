@@ -45,7 +45,8 @@ public class Constants {
     public static final int CLASS_TWO_CYCLE = (int) CLOCK_IN_SECOND / CLASS_TWO_COUNT;
     public static final int CLASS_THREE_CYCLE = (int) CLOCK_IN_SECOND / CLASS_THREE_COUNT;
 
-    public static final String FIGURE_DIR = "src/main/resources/figures/";
+    public static final String ROOT_DIR = "/home/alireza/projects/java/largeScaleNetworkSimulation/";
+    public static final String FIGURE_DIR = ROOT_DIR + "src/main/resources/charts/";
 
     // Recursive function to return gcd of a and b
     static int gcd(int a, int b) {
