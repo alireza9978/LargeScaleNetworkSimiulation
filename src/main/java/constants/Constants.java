@@ -2,13 +2,15 @@ package constants;
 
 public class Constants {
 
-    public static final int SERVER_COUNT = 1;
-    public static final int SWITCH_COUNT = 6;
-    public static final int NODE_COUNT = 60;
+    public static final int MAX_SERVER_COUNT = 50;
+    public static final int MAX_SWITCH_COUNT = 1000;
+    public static final int MAX_NODE_COUNT = 60;
+
+
     public static final int MINIMUM_ACTIVE_NODE_COUNT = 10;
     public static final int EDGE_SWITCH_COUNT = 3;
-    public static final int EDGE_SWITCH_NODE_COUNT = NODE_COUNT / EDGE_SWITCH_COUNT;
-    public static final int NODE_COUNT_TOLERANCE = 5;
+    public static int EDGE_SWITCH_NODE_COUNT = MAX_NODE_COUNT / EDGE_SWITCH_COUNT;
+    public static int NODE_COUNT_TOLERANCE = EDGE_SWITCH_NODE_COUNT;
 
     public static final int SWITCH_MAX_CONNECTION_COUNT = 32;
     public static final int SERVER_MAX_VM_COUNT = 10;
@@ -47,6 +49,8 @@ public class Constants {
 
     public static final String FIGURE_DIR = "src/main/resources/charts/";
     public static final String GRAPH_DIR = "src/main/resources/graphs/";
+    public static final String ROOT_DIR = "/home/alireza/projects/java/largeScaleNetworkSimulation/";
+
 
     // Recursive function to return gcd of a and b
     static int gcd(int a, int b) {

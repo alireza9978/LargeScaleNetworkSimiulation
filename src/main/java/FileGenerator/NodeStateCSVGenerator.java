@@ -23,7 +23,7 @@ public class NodeStateCSVGenerator {
         ) {
 
             int minimumNode = MINIMUM_ACTIVE_NODE_COUNT;
-            int maximumNode = Constants.NODE_COUNT;
+            int maximumNode = Constants.MAX_NODE_COUNT;
             long totalStep = 5;
             long step = (maximumNode - minimumNode) / totalStep;
             int activeCount = minimumNode;

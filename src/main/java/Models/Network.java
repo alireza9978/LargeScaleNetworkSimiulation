@@ -1,14 +1,13 @@
 package Models;
 
 import Models.InfrastructureConnections.*;
+import Visualization.GraphMaker;
 import Visualization.Visualization;
 import constants.Constants;
 import constants.NetworkStructureUtil;
 import constants.NodeType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static constants.Constants.*;
@@ -18,19 +17,23 @@ public class Network {
     private Server[] servers;
     private Switch[] switches;
     private Node[] nodes;
+    private int switchCount;
+    private int serverCount;
+    private int nodeCount;
     private final long[] activeNodeCount;
     private final ArrayList<Node> deactivateNodes = new ArrayList<>();
     private final ArrayList<Node> activateNodes = new ArrayList<>();
     private final NodeActivation[] nodeActivations;
 
-    public Network(int serverCount, int switchCount, int nodeCount) {
+    public Network() {
         activeNodeCount = new long[NodeType.getCount()];
-        initialize(serverCount, switchCount, nodeCount);
-        connectSwitches(NetworkStructureUtil.getSwitchesStructure());
-        connectNodes(NetworkStructureUtil.getNodeStructure());
-        connectServers(NetworkStructureUtil.getServerStructure());
+        initialize();
+        switchCount = connectSwitches(NetworkStructureUtil.getSwitchesStructure());
+        nodeCount = connectNodes(NetworkStructureUtil.getNodeStructure());
+        serverCount = connectServers(NetworkStructureUtil.getServerStructure());
         startVirtualMachines(NetworkStructureUtil.getVirtualMachinesStructure());
         nodeActivations = NetworkStructureUtil.getActiveNodesStructure().toArray(new NodeActivation[0]);
+        GraphMaker.create(this);
     }
 
     private void startVirtualMachines(ArrayList<VirtualMachineConnection> virtualMachineConnections) {
@@ -39,13 +42,16 @@ public class Network {
         }
     }
 
-    private void connectServers(ArrayList<ServerConnection> serverConnections) {
+    private int connectServers(ArrayList<ServerConnection> serverConnections) {
+        Set<Integer> uniqueId = new HashSet<>();
         for (ServerConnection connection : serverConnections) {
+            uniqueId.add(connection.getId());
             switches[connection.getSwitchId()].connect(servers[connection.getId()], connection.getPort());
         }
+        return uniqueId.size();
     }
 
-    private void connectNodes(ArrayList<NodeConnection> nodeConnections) {
+    private int connectNodes(ArrayList<NodeConnection> nodeConnections) {
         int index = 0;
         for (NodeConnection connection : nodeConnections) {
             for (int i = index; i < index + connection.getNodeCount(); i++) {
@@ -53,29 +59,34 @@ public class Network {
             }
             index = index + connection.getNodeCount();
         }
+        return MAX_NODE_COUNT;
     }
 
-    private void connectSwitches(ArrayList<SwitchConnection> switchConnections) {
+    private int connectSwitches(ArrayList<SwitchConnection> switchConnections) {
+        Set<Integer> uniqueId = new HashSet<>();
         for (SwitchConnection connection : switchConnections) {
+            uniqueId.add(connection.getStart());
+            uniqueId.add(connection.getEnd());
             switches[connection.getStart()].connect(switches[connection.getEnd()], connection.getStartPort());
             switches[connection.getEnd()].connect(switches[connection.getStart()], connection.getEndPort());
         }
+        return uniqueId.size();
     }
 
-    private void initialize(int serverCount, int switchCount, int nodeCount) {
-        servers = new Server[serverCount];
-        switches = new Switch[switchCount];
-        nodes = new Node[nodeCount];
+    private void initialize() {
+        servers = new Server[Constants.MAX_SERVER_COUNT];
+        switches = new Switch[Constants.MAX_SWITCH_COUNT];
+        nodes = new Node[Constants.MAX_NODE_COUNT];
 
-        for (int i = 0; i < serverCount; i++) {
+        for (int i = 0; i < servers.length; i++) {
             servers[i] = new Server();
         }
 
-        for (int i = 0; i < switchCount; i++) {
+        for (int i = 0; i < switches.length; i++) {
             switches[i] = new Switch();
         }
 
-        for (int i = 0; i < nodeCount; i++) {
+        for (int i = 0; i < nodes.length; i++) {
             nodes[i] = new Node();
             deactivateNodes.add(nodes[i]);
         }
@@ -118,7 +129,7 @@ public class Network {
         int hour = 0;
         int activationPointer = 0;
         System.out.println("total clock = " + SMALL_TOTAL_CLOCK_COUNT);
-        Visualization visualization = new Visualization(hour);
+        Visualization visualization = new Visualization(hour, serverCount, switchCount);
 
         for (long clock = 1; clock <= Constants.SMALL_TOTAL_CLOCK_COUNT; clock++) {
 
@@ -142,7 +153,7 @@ public class Network {
             if (clock % ONE_HOUR_CLOCK_COUNT == 0) {
                 hour += 1;
                 visualization.plot();
-                visualization = new Visualization(hour);
+                visualization = new Visualization(hour, serverCount, switchCount);
                 System.out.println("hour = " + hour);
                 System.gc();
             }

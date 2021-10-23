@@ -22,8 +22,21 @@ public class Switch implements Receiver, Runnable {
         buffers = new Buffer[Constants.SWITCH_MAX_CONNECTION_COUNT];
     }
 
+    public boolean isConnected() {
+        for (Buffer buffer : buffers) {
+            if (buffer != null) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean checkSetting() {
-        return routingSetting != null;
+        if (isConnected()) {
+            return routingSetting != null;
+        } else {
+            return true;
+        }
     }
 
     public void connect(Receiver receiver, int port) {

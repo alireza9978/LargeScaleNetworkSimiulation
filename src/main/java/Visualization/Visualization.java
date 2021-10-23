@@ -18,17 +18,21 @@ public class Visualization {
     private final ArrayList<Integer> xAxis = new ArrayList<>();
     private int clock = 0;
     private final int hour;
-    private final ArrayList<Integer>[] switchesInputPackets = new ArrayList[SWITCH_COUNT];
-    private final ArrayList<Float>[] switchesQueuePackets = new ArrayList[SWITCH_COUNT];
-    private final ArrayList<Float>[] serverUtilization = new ArrayList[SERVER_COUNT];
+    private final int serverCount;
+    private final int switchCount;
+    private final ArrayList<Integer>[] switchesInputPackets = new ArrayList[MAX_SWITCH_COUNT];
+    private final ArrayList<Float>[] switchesQueuePackets = new ArrayList[MAX_SWITCH_COUNT];
+    private final ArrayList<Float>[] serverUtilization = new ArrayList[MAX_SERVER_COUNT];
     private final ArrayList<Long> activeNodeCount = new ArrayList<>();
 
-    public Visualization(int hour) {
+    public Visualization(int hour, int serverCount, int switchCount) {
         this.hour = hour;
-        for (int i = 0; i < SERVER_COUNT; i++) {
+        this.serverCount = serverCount;
+        this.switchCount = switchCount;
+        for (int i = 0; i < serverCount; i++) {
             serverUtilization[i] = new ArrayList<>();
         }
-        for (int i = 0; i < SWITCH_COUNT; i++) {
+        for (int i = 0; i < switchCount; i++) {
             switchesInputPackets[i] = new ArrayList<>();
             switchesQueuePackets[i] = new ArrayList<>();
         }
@@ -37,12 +41,12 @@ public class Visualization {
     public void getData(Network network) {
         xAxis.add(clock);
         clock++;
-        for (int i = 0; i < SWITCH_COUNT; i++) {
+        for (int i = 0; i < switchCount; i++) {
             Switch s = network.getSwitch(i);
             switchesInputPackets[i].add(s.getInputPacketsCount());
             switchesQueuePackets[i].add(s.getQueuePacketsCount());
         }
-        for (int i = 0; i < SERVER_COUNT; i++) {
+        for (int i = 0; i < serverCount; i++) {
             Server s = network.getServer(i);
             serverUtilization[i].add(s.getUtilization());
         }
