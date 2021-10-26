@@ -6,12 +6,12 @@ import java.util.Arrays;
 
 public class Server implements Receiver {
 
-    public final int id;
+    private final int id;
     private static int ID = 0;
     private final VirtualMachine[] virtualMachines;
     private int virtualMachinesCount = 0;
     private long totalPacket = 0;
-    private long totalPacketUntilLastHour = 0;
+    private long totalPacketUntilLastSecond = 0;
 
     public Server() {
         this.id = ID;
@@ -64,8 +64,20 @@ public class Server implements Receiver {
     }
 
     public Float getUtilization() {
-        float temp = (float) (totalPacket - totalPacketUntilLastHour) / (float) Constants.SERVER_MAX_PROCESSING_PACKET_IN_HOUR;
-        totalPacketUntilLastHour = totalPacket;
+        float temp = (float) (totalPacket - totalPacketUntilLastSecond) / (float) Constants.SERVER_MAX_PROCESSING_PACKET_IN_SECOND;
+        totalPacketUntilLastSecond = totalPacket;
         return temp;
+    }
+
+    public VirtualMachine[] getVirtualMachines() {
+        return virtualMachines;
+    }
+
+    public int getVirtualMachinesCount() {
+        return virtualMachinesCount;
+    }
+
+    public int getId() {
+        return id;
     }
 }

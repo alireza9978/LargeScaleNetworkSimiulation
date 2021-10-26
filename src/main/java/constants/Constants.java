@@ -6,9 +6,9 @@ public class Constants {
     public static final int MAX_VM_IN_SINGLE_SERVER_COUNT = 10;
     public static final int MAX_SWITCH_COUNT = 1000;
 
-    public static final int MAX_NODE_COUNT = 105_000;
-    // we have 168 edge node maxNodeCount must be dividable by 168
-    public static final int MINIMUM_ACTIVE_NODE_COUNT = 4_200;
+    public static final int MAX_NODE_COUNT = 186_000;
+    // we have 186 edge node maxNodeCount must be dividable by 186
+    public static final int MINIMUM_ACTIVE_NODE_COUNT = 6_000;
     // maxNodeCount - minimumActiveNodeCount must be dividable by 24*12
 
     public static final int EDGE_SWITCH_COUNT = 3;
@@ -47,6 +47,7 @@ public class Constants {
     public static final long ONE_HOUR_CLOCK_COUNT = 60L * 60L * CLOCK_IN_SECOND;
     public static final long HALF_HOUR_CLOCK_COUNT = 30L * 60L * CLOCK_IN_SECOND;
     public static final long TEN_MINUTE_CLOCK_COUNT = 10L * 60L * CLOCK_IN_SECOND;
+    public static final long FIVE_MINUTE_CLOCK_COUNT = 5L * 60L * CLOCK_IN_SECOND;
 
     // classes packets generation speed in clock
     public static final int CLASS_ONE_CYCLE = (int) CLOCK_IN_SECOND / CLASS_ONE_COUNT;

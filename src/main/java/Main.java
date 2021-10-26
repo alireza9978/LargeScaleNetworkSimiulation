@@ -1,6 +1,8 @@
 import FileGenerator.NodeStateCSVGenerator;
 import FileGenerator.NetworkConnectionCSVGenerator;
 import Models.Network;
+import Models.controllers.ShortestPathController;
+import Models.controllers.SimpleFileBasedController;
 
 public class Main {
 
@@ -13,7 +15,8 @@ public class Main {
         networkConnectionCSVGenerator.create();
         System.out.println("starting the simulation");
         Network test = new Network();
-//        test.simulate();
+//        test.simulate(new SimpleFileBasedController());
+        test.simulate(new ShortestPathController());
 
     }
 

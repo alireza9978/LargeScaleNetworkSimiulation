@@ -1,14 +1,18 @@
-package Models;
+package Models.controllers;
 
 import Models.FlowNumberSetting.NodeFlowNumber;
 import Models.FlowNumberSetting.SwitchFlowSetting;
+import Models.Network;
+import Models.Node;
 import constants.NetworkStructureUtil;
 
 import java.util.ArrayList;
 
-public class Controller {
+public class SimpleFileBasedController extends Controller {
 
-    public static void setPath(Network network) {
+
+    @Override
+    public void initialize(Network network) {
         ArrayList<NodeFlowNumber> nodeFlows = NetworkStructureUtil.getNodeFlowNumber();
         for (NodeFlowNumber temp : nodeFlows) {
             network.getNode(temp.getNodeId()).setFlowNumber(temp.getFlowNumber());
@@ -18,6 +22,16 @@ public class Controller {
         for (SwitchFlowSetting temp : switchesFlow) {
             network.getSwitch(temp.getSwitchId()).updateRoutingSetting(temp.getSetting());
         }
+    }
+
+    @Override
+    public void updatePath(Network network) {
+
+    }
+
+    @Override
+    public void updatePath(Network network, ArrayList<Node> activatedNode, ArrayList<Node> deactivatedNode) {
+
     }
 
 }

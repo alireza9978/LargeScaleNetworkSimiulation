@@ -1,6 +1,7 @@
 package Models;
 
 import Models.InfrastructureConnections.*;
+import Models.controllers.Controller;
 import Visualization.GraphMaker;
 import Visualization.Visualization;
 import constants.Constants;
@@ -23,6 +24,8 @@ public class Network {
     private final long[] activeNodeCount;
     private final ArrayList<Node> deactivateNodes = new ArrayList<>();
     private final ArrayList<Node> activateNodes = new ArrayList<>();
+    private final ArrayList<Node> recentlyActivatedNodes = new ArrayList<>();
+    private final ArrayList<Node> recentlyDeactivatedNodes = new ArrayList<>();
     private final NodeActivation[] nodeActivations;
 
     public Network() {
@@ -90,31 +93,46 @@ public class Network {
             nodes[i] = new Node();
             deactivateNodes.add(nodes[i]);
         }
-        activateRandomNode(Constants.MINIMUM_ACTIVE_NODE_COUNT);
     }
 
     public void activateRandomNode(int count) {
         Random random = new Random();
-        for (int i = 0; i < count; i++) {
-            Node node = deactivateNodes.remove(random.nextInt(deactivateNodes.size()));
-            activeNodeCount[node.getType().toInt()]++;
-            node.setOn(true);
-            activateNodes.add(node);
+        if (count > 0){
+            for (int i = 0; i < count; i++) {
+                Node node = deactivateNodes.remove(random.nextInt(deactivateNodes.size()));
+                activeNodeCount[node.getType().toInt()]++;
+                node.setOn(true);
+                recentlyActivatedNodes.add(node);
+            }
+        }else{
+            count = -count;
+            for (int i = 0; i < count; i++) {
+                Node node = activateNodes.remove(random.nextInt(activateNodes.size()));
+                activeNodeCount[node.getType().toInt()]--;
+                node.setOn(false);
+                recentlyDeactivatedNodes.add(node);
+            }
         }
+
     }
 
-    public void deactivateRandomNode(int count) {
-        Random random = new Random();
-        for (int i = 0; i < count; i++) {
-            Node node = activateNodes.remove(random.nextInt(deactivateNodes.size()));
-            activeNodeCount[node.getType().toInt()]--;
-            node.setOn(false);
-            deactivateNodes.add(node);
-        }
+
+    private int updateNodesActivationState(Controller controller, int activationPointer, long clock){
+        if (activationPointer < nodeActivations.length)
+            if (nodeActivations[activationPointer].getTime() == clock) {
+                activateRandomNode(nodeActivations[activationPointer].getToActivate());
+                activationPointer++;
+                controller.updatePath(this, recentlyActivatedNodes, recentlyDeactivatedNodes);
+                activateNodes.addAll(recentlyActivatedNodes);
+                deactivateNodes.addAll(recentlyDeactivatedNodes);
+                recentlyActivatedNodes.clear();
+                recentlyDeactivatedNodes.clear();
+            }
+        return activationPointer;
     }
 
-    public void simulate() {
-        Controller.setPath(this);
+    public void simulate(Controller controller) {
+        controller.initialize(this);
 
         for (Switch aSwitch : switches) {
             if (!aSwitch.checkSetting()) {
@@ -123,15 +141,18 @@ public class Network {
             }
         }
 
-        System.out.println("link Speed in clock = " + Constants.LINK_SPEED_PER_CLOCK);
-
         long start = System.currentTimeMillis();
         int hour = 0;
         int activationPointer = 0;
-        System.out.println("total clock = " + SMALL_TOTAL_CLOCK_COUNT);
+
+        System.out.println("link Speed in clock = " + Constants.LINK_SPEED_PER_CLOCK);
+        System.out.println("total clock = " + TOTAL_CLOCK_COUNT);
+        System.out.println("total node in network = " + nodeCount);
+
+        activationPointer = updateNodesActivationState(controller, activationPointer, 0);
         Visualization visualization = new Visualization(hour, serverCount, switchCount);
 
-        for (long clock = 1; clock <= Constants.SMALL_TOTAL_CLOCK_COUNT; clock++) {
+        for (long clock = 1; clock <= Constants.TOTAL_CLOCK_COUNT; clock++) {
 
             Arrays.stream(nodes).forEachOrdered(Node::run);
 
@@ -141,25 +162,22 @@ public class Network {
 
             Arrays.stream(servers).forEachOrdered(Server::run);
 
-            if (clock % TEN_MINUTE_CLOCK_COUNT == 0) {
+            if (clock % FIVE_MINUTE_CLOCK_COUNT == 0) {
                 System.out.println("second = " + clock / CLOCK_IN_SECOND);
-                if (activationPointer < nodeActivations.length)
-                    if (nodeActivations[activationPointer].getTime() == clock) {
-                        activateRandomNode(nodeActivations[activationPointer].getToActivate());
-                        activationPointer++;
-                    }
+                activationPointer = updateNodesActivationState(controller, activationPointer, clock);
             }
 
             if (clock % ONE_HOUR_CLOCK_COUNT == 0) {
                 hour += 1;
-                visualization.plot();
-                visualization = new Visualization(hour, serverCount, switchCount);
+//                visualization.plot();
+//                visualization = new Visualization(hour, serverCount, switchCount);
                 System.out.println("hour = " + hour);
                 System.gc();
             }
 
             if (clock % CLOCK_IN_SECOND == 0) {
-                visualization.getData(this);
+                controller.updatePath(this);
+//                visualization.getData(this);
             }
 
         }
@@ -193,4 +211,23 @@ public class Network {
         return activeNodeCount[type];
     }
 
+    public long getActiveNodeCount() {
+        long sum = 0;
+        for (int i = 0; i < NodeType.getCount(); i++) {
+            sum += activeNodeCount[i];
+        }
+        return sum;
+    }
+
+    public int getSwitchCount() {
+        return switchCount;
+    }
+
+    public int getServerCount() {
+        return serverCount;
+    }
+
+    public int getNodeCount() {
+        return nodeCount;
+    }
 }

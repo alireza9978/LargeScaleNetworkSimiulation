@@ -1,13 +1,14 @@
 package Models;
 
 import constants.Constants;
+import constants.Pair;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
 
 public class Switch implements Receiver, Runnable {
 
-    public final int id;
+    private final int id;
     private static int ID = 0;
     private final Buffer[] buffers;
     private Hashtable<Integer, Integer> routingSetting = null;
@@ -15,6 +16,8 @@ public class Switch implements Receiver, Runnable {
     private int inputPacketsCount = 0;
     private int sumPacketCountInQueue = 0;
     private int clockForAverage = 0;
+    private ArrayList<Pair<Integer, Integer>> switchesConnections = new ArrayList<>();
+    private ArrayList<Pair<Integer, Integer>> serversConnections = new ArrayList<>();
 
     public Switch() {
         this.id = ID;
@@ -41,10 +44,20 @@ public class Switch implements Receiver, Runnable {
 
     public void connect(Receiver receiver, int port) {
         buffers[port] = new Buffer(receiver);
+        if (receiver instanceof Switch) {
+            switchesConnections.add(new Pair<>(((Switch) receiver).getId(), port));
+        }
+        if (receiver instanceof Server) {
+            serversConnections.add(new Pair<>(((Server) receiver).getId(), port));
+        }
     }
 
     public void updateRoutingSetting(Hashtable<Integer, Integer> routingSetting) {
         this.routingSetting = routingSetting;
+    }
+
+    public void addRoutingSetting(Integer key, Integer value) {
+        routingSetting.put(key, value);
     }
 
     public void routeReceivedPackets() {
@@ -94,5 +107,17 @@ public class Switch implements Receiver, Runnable {
         sumPacketCountInQueue = 0;
         clockForAverage = 0;
         return temp;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public ArrayList<Pair<Integer, Integer>> getSwitchesConnections() {
+        return switchesConnections;
+    }
+
+    public ArrayList<Pair<Integer, Integer>> getServersConnections() {
+        return serversConnections;
     }
 }
