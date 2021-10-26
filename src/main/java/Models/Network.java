@@ -17,9 +17,9 @@ public class Network {
     private Server[] servers;
     private Switch[] switches;
     private Node[] nodes;
-    private int switchCount;
-    private int serverCount;
-    private int nodeCount;
+    private final int switchCount;
+    private final int serverCount;
+    private final int nodeCount;
     private final long[] activeNodeCount;
     private final ArrayList<Node> deactivateNodes = new ArrayList<>();
     private final ArrayList<Node> activateNodes = new ArrayList<>();
@@ -59,7 +59,7 @@ public class Network {
             }
             index = index + connection.getNodeCount();
         }
-        return MAX_NODE_COUNT;
+        return index;
     }
 
     private int connectSwitches(ArrayList<SwitchConnection> switchConnections) {

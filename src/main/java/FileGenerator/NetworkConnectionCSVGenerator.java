@@ -1,6 +1,7 @@
 package FileGenerator;
 
 import constants.Constants;
+import constants.NodeType;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
@@ -11,19 +12,29 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-public class SwitchConnectionCSVGenerator {
+public class NetworkConnectionCSVGenerator {
 
     public static void main(String[] args) {
+        NetworkConnectionCSVGenerator networkConnectionCSVGenerator = new NetworkConnectionCSVGenerator();
+        networkConnectionCSVGenerator.create();
+    }
+
+
+    public void create() {
         String switchesPath = Constants.ROOT_DIR + "src/main/java/NetworkStructureFiles/switches_generated.csv";
         String serversPath = Constants.ROOT_DIR + "src/main/java/NetworkStructureFiles/servers_generated.csv";
         String edgeSwitchesPath = Constants.ROOT_DIR + "src/main/java/NetworkStructureFiles/edge_switches_generated.csv";
+        String vmPath = Constants.ROOT_DIR + "src/main/java/NetworkStructureFiles/vm_generated.csv";
         try (
                 Writer switchesWriter = Files.newBufferedWriter(Paths.get(switchesPath));
                 Writer serversWriter = Files.newBufferedWriter(Paths.get(serversPath));
                 Writer edgeSwitchesWriter = Files.newBufferedWriter(Paths.get(edgeSwitchesPath));
+                Writer vmWriter = Files.newBufferedWriter(Paths.get(vmPath));
                 CSVPrinter switchersCsvPrinter = new CSVPrinter(switchesWriter, CSVFormat.DEFAULT.withHeader("id", "port", "target", "target_port"));
                 CSVPrinter serversCsvPrinter = new CSVPrinter(serversWriter, CSVFormat.DEFAULT.withHeader("id", "switch", "port"));
                 CSVPrinter edgeSwitchesCsvPrinter = new CSVPrinter(edgeSwitchesWriter, CSVFormat.DEFAULT.withHeader("id"));
+                CSVPrinter vmCsvPrinter = new CSVPrinter(vmWriter, CSVFormat.DEFAULT.withHeader("id", "server", "port", "type"))
+
         ) {
             Sample sample = createNetwork(5, "");
 
@@ -42,6 +53,16 @@ public class SwitchConnectionCSVGenerator {
                         sampleConnection.getSampleIdEnd(), sampleConnection.getSampleEndPort());
             }
             switchersCsvPrinter.flush();
+
+            int vmId = 0;
+            for (int j = 0; j < 3; j++) { //loop over servers
+                for (int i = 0; i < NodeType.getCount(); i++) {
+                    vmCsvPrinter.printRecord(vmId, j, i, i);
+                    vmId++;
+                }
+            }
+            vmCsvPrinter.flush();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -156,9 +177,9 @@ public class SwitchConnectionCSVGenerator {
                 connections.addAll(getA().getConnections());
                 connections.addAll(getB().getConnections());
                 connections.addAll(getC().getConnections());
-                if (a instanceof SwitchConnectionCSVGenerator.Switch
-                        && b instanceof SwitchConnectionCSVGenerator.Switch
-                        && c instanceof SwitchConnectionCSVGenerator.Switch) {
+                if (a instanceof NetworkConnectionCSVGenerator.Switch
+                        && b instanceof NetworkConnectionCSVGenerator.Switch
+                        && c instanceof NetworkConnectionCSVGenerator.Switch) {
 
                     connections.add(new SampleConnection(((Switch) a).getId(), ((Switch) b).getId(), 0, 0));
                     connections.add(new SampleConnection(((Switch) a).getId(), ((Switch) c).getId(), 1, 0));
