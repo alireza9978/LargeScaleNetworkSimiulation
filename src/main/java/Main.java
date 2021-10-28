@@ -1,13 +1,22 @@
+import FileGenerator.NodeStateCSVGenerator;
+import FileGenerator.NetworkConnectionCSVGenerator;
 import Models.Network;
-import constants.Constants;
+import Models.controllers.ShortestPathController;
+import Models.controllers.SimpleFileBasedController;
 
 public class Main {
 
     public static void main(String[] args) {
 
-        System.out.println("start");
-        Network test = new Network(Constants.SERVER_COUNT, Constants.SWITCH_COUNT, Constants.NODE_COUNT);
-        test.simulate();
+        System.out.println("generating network structure files");
+        NodeStateCSVGenerator nodeStateCSVGenerator = new NodeStateCSVGenerator();
+        nodeStateCSVGenerator.create();
+        NetworkConnectionCSVGenerator networkConnectionCSVGenerator = new NetworkConnectionCSVGenerator();
+        networkConnectionCSVGenerator.create();
+        System.out.println("starting the simulation");
+        Network test = new Network();
+//        test.simulate(new SimpleFileBasedController());
+        test.simulate(new ShortestPathController());
 
     }
 
