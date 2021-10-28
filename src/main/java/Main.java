@@ -16,7 +16,7 @@ public class Main {
         System.out.println("starting the simulation");
         Network test = new Network();
 //        test.simulate(new SimpleFileBasedController());
-        test.simulate(new ShortestPathController());
+//        test.simulate(new ShortestPathController());
 
     }
 

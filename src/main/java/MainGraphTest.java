@@ -20,11 +20,10 @@ public class MainGraphTest {
         Graph g = graph("example1").directed()
                 .graphAttr().with(Rank.dir(LEFT_TO_RIGHT))
                 .nodeAttr().with(Font.name("Arial"))
-                .linkAttr().with("class", "link-class")
-                .with(node("a").with(Color.RED).link(node("b")),
-                        node("b").link(to(node("c")).with(attr("weight", 5), Style.DASHED)));
+                .linkAttr().with("class", "link-class");
+        g = g.with(node("a").with(Color.RED).link(node("b")));
         try {
-            Graphviz.fromGraph(g).height(100).render(Format.PNG).toFile(new File(GRAPH_DIR + "ex1.png"));
+            Graphviz.fromGraph(g).height(100).render(Format.PNG).toFile(new File(GRAPH_DIR + "test.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

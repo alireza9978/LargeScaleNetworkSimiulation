@@ -31,12 +31,14 @@ public class Network {
     public Network() {
         activeNodeCount = new long[NodeType.getCount()];
         initialize();
-        switchCount = connectSwitches(NetworkStructureUtil.getSwitchesStructure());
-        nodeCount = connectNodes(NetworkStructureUtil.getNodeStructure());
+        ArrayList<SwitchConnection> switchConnections = NetworkStructureUtil.getSwitchesStructure();
+        ArrayList<NodeConnection> nodeConnections = NetworkStructureUtil.getNodeStructure();
+        switchCount = connectSwitches(switchConnections);
+        nodeCount = connectNodes(nodeConnections);
         serverCount = connectServers(NetworkStructureUtil.getServerStructure());
         startVirtualMachines(NetworkStructureUtil.getVirtualMachinesStructure());
         nodeActivations = NetworkStructureUtil.getActiveNodesStructure().toArray(new NodeActivation[0]);
-        GraphMaker.create(this);
+        GraphMaker.create(switchConnections, nodeConnections);
     }
 
     private void startVirtualMachines(ArrayList<VirtualMachineConnection> virtualMachineConnections) {
