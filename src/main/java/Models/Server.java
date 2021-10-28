@@ -43,10 +43,10 @@ public class Server implements Receiver {
         totalPacket++;
     }
 
-    public void run() {
+    public void run(long clock) {
         for (VirtualMachine virtualMachine : virtualMachines) {
             if (virtualMachine != null) {
-                virtualMachine.simulate();
+                virtualMachine.simulate(clock);
             }
         }
     }

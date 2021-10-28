@@ -160,7 +160,9 @@ public class Network {
 
             Arrays.stream(switches).forEachOrdered(Switch::run);
 
-            Arrays.stream(servers).forEachOrdered(Server::run);
+            for (Server server : servers) {
+                server.run(clock);
+            }
 
             if (clock % FIVE_MINUTE_CLOCK_COUNT == 0) {
                 System.out.println("second = " + clock / CLOCK_IN_SECOND);

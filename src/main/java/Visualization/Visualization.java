@@ -27,8 +27,8 @@ public class Visualization {
     private final ArrayList<Float>[] switchesQueuePackets = new ArrayList[MAX_SWITCH_COUNT];
     private final ArrayList<Float>[] serverUtilization = new ArrayList[MAX_SERVER_COUNT];
     private final ArrayList<Float>[][] vmUtilization = new ArrayList[MAX_SERVER_COUNT][MAX_VM_IN_SINGLE_SERVER_COUNT];
-    private final ArrayList<EndToEndDelay>[][] averageEndToEndDelay = new ArrayList[MAX_SERVER_COUNT][MAX_VM_IN_SINGLE_SERVER_COUNT];
     private final ArrayList<Long> activeNodeCount = new ArrayList<>();
+    private final ArrayList<Float> endToEndDelays = new ArrayList<>();
 
     public Visualization(int hour, int serverCount, int switchCount) {
         this.hour = hour;
@@ -56,6 +56,7 @@ public class Visualization {
             switchesQueuePackets[i].add(s.getQueuePacketsCount());
             switchesDroppedPackets[i].add(s.getDroppedPacketsCount());
         }
+        EndToEndDelay endToEndDelay = new EndToEndDelay();
         for (int i = 0; i < serverCount; i++) {
             Server s = network.getServer(i);
             serverUtilization[i].add(s.getUtilization());
@@ -64,9 +65,11 @@ public class Visualization {
                 VirtualMachine tempVirtualMachines = virtualMachines[j];
                 if (tempVirtualMachines != null) {
                     vmUtilization[i][j].add(tempVirtualMachines.getUtilization());
+                    endToEndDelay = endToEndDelay.merge(tempVirtualMachines.getEndToEndDelay());
                 }
             }
         }
+        endToEndDelays.add(endToEndDelay.getAverage());
         activeNodeCount.add(network.getActiveNodeCount());
     }
 
@@ -129,6 +132,16 @@ public class Visualization {
                     "all node type", xAxis, activeNodeCount);
             try {
                 BitmapEncoder.saveBitmapWithDPI(queuePacketChart, FIGURE_DIR + "nodes/activeNodeCount_hour_" + hour,
+                        BitmapEncoder.BitmapFormat.PNG, 300);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        {
+            XYChart endToEndDelaysChart = QuickChart.getChart("End-to-End Delay in " + hour + "H", "Time", "End-To-End Delay",
+                    "all node type", xAxis, endToEndDelays);
+            try {
+                BitmapEncoder.saveBitmapWithDPI(endToEndDelaysChart, FIGURE_DIR + "nodes/endToEndDelay_hour_" + hour,
                         BitmapEncoder.BitmapFormat.PNG, 300);
             } catch (IOException e) {
                 e.printStackTrace();

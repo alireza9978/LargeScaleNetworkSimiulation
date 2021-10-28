@@ -33,4 +33,9 @@ public class Packet {
     public long getCreationTime() {
         return creationTime;
     }
+
+    public long getEndToEndDelay(long now){
+        return now - creationTime;
+    }
+
 }

@@ -1,5 +1,6 @@
 package Models;
 
+import Models.StatsModels.EndToEndDelay;
 import constants.Constants;
 import constants.NodeType;
 
@@ -10,7 +11,9 @@ public class VirtualMachine implements Receiver {
     private int cycleProcessedPackets = 0;
     public final int listeningPort;
     public final int id;
+    public long clock = 1;
     private static int ID = 0;
+    private EndToEndDelay endToEndDelay = new EndToEndDelay();
 
     public VirtualMachine(NodeType type, int listeningPort) {
         this.type = type;
@@ -27,13 +30,15 @@ public class VirtualMachine implements Receiver {
         }
         if (packet.getSender().getType().equals(type)) {
             cycleProcessedPackets += 1;
-        }else{
+            endToEndDelay.addPacket(packet.getEndToEndDelay(clock));
+        } else {
             System.out.println("VM id=" + id + " has a wrong input packet");
         }
     }
 
-    public void simulate() {
+    public void simulate(long clock) {
         totalProcessedPackets += cycleProcessedPackets;
+        this.clock = clock;
     }
 
     public float getUsage() {
@@ -71,5 +76,10 @@ public class VirtualMachine implements Receiver {
         return temp;
     }
 
+    public EndToEndDelay getEndToEndDelay() {
+        EndToEndDelay temp = this.endToEndDelay;
+        this.endToEndDelay = new EndToEndDelay();
+        return temp;
+    }
 
 }
