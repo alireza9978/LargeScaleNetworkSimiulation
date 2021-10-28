@@ -5,16 +5,13 @@ public class Packet {
     public int flowNumber = -1;
     public final Node sender;
     public final int size;
+    public final long creationTime;
 
-    public Packet(int flowNumber, Node sender, int size) {
+    public Packet(int flowNumber, Node sender, int size, long creationTime) {
         this.flowNumber = flowNumber;
         this.sender = sender;
         this.size = size;
-    }
-
-    public Packet(Node sender, int size) {
-        this.sender = sender;
-        this.size = size;
+        this.creationTime = creationTime;
     }
 
     public int getFlowNumber() {
@@ -31,5 +28,9 @@ public class Packet {
 
     public int getSize() {
         return size;
+    }
+
+    public long getCreationTime() {
+        return creationTime;
     }
 }

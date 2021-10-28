@@ -50,7 +50,7 @@ public class Node implements Runnable {
     public void run() {
         if (isOn()) {
             if (clock % type.getPeriod() == 0) {
-                connection.receive(new Packet(flowNumber, this, type.getSize()));
+                connection.receive(new Packet(flowNumber, this, type.getSize(), clock));
             }
         }
         clock++;
