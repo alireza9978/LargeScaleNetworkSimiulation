@@ -18,6 +18,7 @@ public class Switch implements Receiver, Runnable {
     private int clockForAverage = 0;
     private ArrayList<Pair<Integer, Integer>> switchesConnections = new ArrayList<>();
     private ArrayList<Pair<Integer, Integer>> serversConnections = new ArrayList<>();
+    private int droppedPacket = 0;
 
     public Switch() {
         this.id = ID;
@@ -43,7 +44,7 @@ public class Switch implements Receiver, Runnable {
     }
 
     public void connect(Receiver receiver, int port) {
-        buffers[port] = new Buffer(receiver);
+        buffers[port] = new Buffer(receiver, getId(), port);
         if (receiver instanceof Switch) {
             switchesConnections.add(new Pair<>(((Switch) receiver).getId(), port));
         }
@@ -66,7 +67,9 @@ public class Switch implements Receiver, Runnable {
             if (packet != null) {
                 Integer targetBuffer = routingSetting.get(packet.flowNumber);
                 if (targetBuffer != null) {
-                    buffers[targetBuffer].addPacket(packet);
+                    if(!buffers[targetBuffer].addPacket(packet)){
+                        droppedPacket++;
+                    }
                 }
             } else {
                 System.out.println("null packet received");
@@ -106,6 +109,12 @@ public class Switch implements Receiver, Runnable {
         float temp = (float) sumPacketCountInQueue / (float) clockForAverage;
         sumPacketCountInQueue = 0;
         clockForAverage = 0;
+        return temp;
+    }
+
+    public int getDroppedPacketsCount() {
+        int temp = droppedPacket;
+        droppedPacket = 0;
         return temp;
     }
 

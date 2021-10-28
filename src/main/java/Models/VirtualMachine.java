@@ -21,17 +21,19 @@ public class VirtualMachine implements Receiver {
 
     @Override
     public void receive(Packet packet) {
+        if (cycleProcessedPackets >= Constants.MAX_VM_PACKET_COUNT_PROCESS_SPEED) {
+            System.out.println("VM id=" + id + " has crashed");
+            return;
+        }
         if (packet.getSender().getType().equals(type)) {
             cycleProcessedPackets += 1;
-        }
-        if (cycleProcessedPackets >= Constants.MAX_VM_PACKET_COUNT_PROCESS_SPEED) {
-            System.out.println("VM CRASH");
+        }else{
+            System.out.println("VM id=" + id + " has a wrong input packet");
         }
     }
 
     public void simulate() {
         totalProcessedPackets += cycleProcessedPackets;
-        cycleProcessedPackets = 0;
     }
 
     public float getUsage() {
@@ -62,4 +64,12 @@ public class VirtualMachine implements Receiver {
                 ", id=" + id +
                 '}';
     }
+
+    public Float getUtilization() {
+        float temp = (float) (cycleProcessedPackets) / (float) Constants.SERVER_MAX_PROCESSING_PACKET_IN_SECOND;
+        cycleProcessedPackets = 0;
+        return temp;
+    }
+
+
 }

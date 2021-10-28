@@ -97,14 +97,14 @@ public class Network {
 
     public void activateRandomNode(int count) {
         Random random = new Random();
-        if (count > 0){
+        if (count > 0) {
             for (int i = 0; i < count; i++) {
                 Node node = deactivateNodes.remove(random.nextInt(deactivateNodes.size()));
                 activeNodeCount[node.getType().toInt()]++;
                 node.setOn(true);
                 recentlyActivatedNodes.add(node);
             }
-        }else{
+        } else {
             count = -count;
             for (int i = 0; i < count; i++) {
                 Node node = activateNodes.remove(random.nextInt(activateNodes.size()));
@@ -117,7 +117,7 @@ public class Network {
     }
 
 
-    private int updateNodesActivationState(Controller controller, int activationPointer, long clock){
+    private int updateNodesActivationState(Controller controller, int activationPointer, long clock) {
         if (activationPointer < nodeActivations.length)
             if (nodeActivations[activationPointer].getTime() == clock) {
                 activateRandomNode(nodeActivations[activationPointer].getToActivate());
@@ -152,9 +152,9 @@ public class Network {
         activationPointer = updateNodesActivationState(controller, activationPointer, 0);
         Visualization visualization = new Visualization(hour, serverCount, switchCount);
 
-        for (long clock = 1; clock <= Constants.TOTAL_CLOCK_COUNT; clock++) {
+        for (long clock = 1; clock <= ONE_HOUR_CLOCK_COUNT; clock++) {
 
-            Arrays.stream(nodes).forEachOrdered(Node::run);
+            activateNodes.forEach(Node::run);
 
             Arrays.stream(switches).forEachOrdered(Switch::routeReceivedPackets);
 
@@ -169,15 +169,15 @@ public class Network {
 
             if (clock % ONE_HOUR_CLOCK_COUNT == 0) {
                 hour += 1;
-//                visualization.plot();
-//                visualization = new Visualization(hour, serverCount, switchCount);
+                visualization.plot();
+                visualization = new Visualization(hour, serverCount, switchCount);
                 System.out.println("hour = " + hour);
                 System.gc();
             }
 
             if (clock % CLOCK_IN_SECOND == 0) {
                 controller.updatePath(this);
-//                visualization.getData(this);
+                visualization.getData(this);
             }
 
         }

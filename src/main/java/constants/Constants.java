@@ -6,9 +6,9 @@ public class Constants {
     public static final int MAX_VM_IN_SINGLE_SERVER_COUNT = 10;
     public static final int MAX_SWITCH_COUNT = 1000;
 
-    public static final int MAX_NODE_COUNT = 186_000;
+    public static final int MAX_NODE_COUNT = 18_600;
     // we have 186 edge node maxNodeCount must be dividable by 186
-    public static final int MINIMUM_ACTIVE_NODE_COUNT = 6_000;
+    public static final int MINIMUM_ACTIVE_NODE_COUNT = 600;
     // maxNodeCount - minimumActiveNodeCount must be dividable by 24*12
 
     public static final int EDGE_SWITCH_COUNT = 3;
@@ -17,18 +17,19 @@ public class Constants {
 
     public static final int SWITCH_MAX_CONNECTION_COUNT = 32;
     public static final int SERVER_MAX_VM_COUNT = 10;
-    public static final int SERVER_MAX_PROCESSING_PACKET_IN_HOUR = 120000;
-    public static final int SERVER_MAX_PROCESSING_PACKET_IN_SECOND = SERVER_MAX_PROCESSING_PACKET_IN_HOUR / 60;
 
-    // packets that each vm can process in a single cycle
-    public static final int MAX_VM_PACKET_COUNT_PROCESS_SPEED = 10000;
+    // packets that each server can process in a second
+    public static final int SERVER_MAX_PROCESSING_PACKET_IN_SECOND = 15000;
+
+    // packets that each vm can process in a second
+    public static final int MAX_VM_PACKET_COUNT_PROCESS_SPEED = 5000;
 
     public static final int MAX_BUFFER_PACKET_COUNT = 10000;
 
     // classes packets size in b
-    public static final int CLASS_ONE_SIZE = 1000;
+    public static final int CLASS_ONE_SIZE = 4000;
     public static final int CLASS_TWO_SIZE = 2000;
-    public static final int CLASS_THREE_SIZE = 4000;
+    public static final int CLASS_THREE_SIZE = 2000;
     public static final int CLASS_FOUR_SIZE = 4000;
 
     // classes packets count in second
@@ -50,10 +51,10 @@ public class Constants {
     public static final long FIVE_MINUTE_CLOCK_COUNT = 5L * 60L * CLOCK_IN_SECOND;
 
     // classes packets generation speed in clock
-    public static final int CLASS_ONE_CYCLE = (int) CLOCK_IN_SECOND / CLASS_ONE_COUNT;
-    public static final int CLASS_TWO_CYCLE = (int) CLOCK_IN_SECOND / CLASS_TWO_COUNT;
-    public static final int CLASS_THREE_CYCLE = (int) CLOCK_IN_SECOND / CLASS_THREE_COUNT;
-    public static final int CLASS_FOUR_CYCLE = (int) CLOCK_IN_SECOND / CLASS_FOUR_COUNT;
+    public static final int CLASS_ONE_CYCLE = (int) (CLOCK_IN_SECOND / CLASS_ONE_COUNT);
+    public static final int CLASS_TWO_CYCLE = (int) (CLOCK_IN_SECOND / CLASS_TWO_COUNT);
+    public static final int CLASS_THREE_CYCLE = (int) (CLOCK_IN_SECOND / CLASS_THREE_COUNT);
+    public static final int CLASS_FOUR_CYCLE = (int) (CLOCK_IN_SECOND / CLASS_FOUR_COUNT);
 
     public static final String FIGURE_DIR = "src/main/resources/charts/";
     public static final String GRAPH_DIR = "src/main/resources/graphs/";
