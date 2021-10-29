@@ -19,7 +19,6 @@ public class NetworkConnectionCSVGenerator {
         networkConnectionCSVGenerator.create();
     }
 
-
     public void create() {
         String switchesPath = Constants.ROOT_DIR + "src/main/java/NetworkStructureFiles/switches_generated.csv";
         String serversPath = Constants.ROOT_DIR + "src/main/java/NetworkStructureFiles/servers_generated.csv";
@@ -30,17 +29,18 @@ public class NetworkConnectionCSVGenerator {
                 Writer serversWriter = Files.newBufferedWriter(Paths.get(serversPath));
                 Writer edgeSwitchesWriter = Files.newBufferedWriter(Paths.get(edgeSwitchesPath));
                 Writer vmWriter = Files.newBufferedWriter(Paths.get(vmPath));
-                CSVPrinter switchersCsvPrinter = new CSVPrinter(switchesWriter, CSVFormat.DEFAULT.withHeader("id", "port", "target", "target_port"));
-                CSVPrinter serversCsvPrinter = new CSVPrinter(serversWriter, CSVFormat.DEFAULT.withHeader("id", "switch", "port"));
+                CSVPrinter switchersCsvPrinter = new CSVPrinter(switchesWriter, CSVFormat.DEFAULT.withHeader("id", "port", "target", "target_port", "link_speed"));
+                CSVPrinter serversCsvPrinter = new CSVPrinter(serversWriter, CSVFormat.DEFAULT.withHeader("id", "switch", "port", "link_speed"));
                 CSVPrinter edgeSwitchesCsvPrinter = new CSVPrinter(edgeSwitchesWriter, CSVFormat.DEFAULT.withHeader("id"));
                 CSVPrinter vmCsvPrinter = new CSVPrinter(vmWriter, CSVFormat.DEFAULT.withHeader("id", "server", "port", "type"))
 
         ) {
-            Sample sample = createNetwork(5, "");
+            Sample sample = createNetwork(2, "");
 
-            serversCsvPrinter.printRecord(0, sample.getTopConnection().getId(), 2);
-            serversCsvPrinter.printRecord(1, sample.getRightConnection().getId(), 2);
-            serversCsvPrinter.printRecord(2, sample.getLeftConnection().getId(), 2);
+            long serversLinkSpeed = Constants.SERVER_LINK_SPEED;
+            serversCsvPrinter.printRecord(0, sample.getTopConnection().getId(), 2, serversLinkSpeed);
+            serversCsvPrinter.printRecord(1, sample.getRightConnection().getId(), 2, serversLinkSpeed);
+            serversCsvPrinter.printRecord(2, sample.getLeftConnection().getId(), 2, serversLinkSpeed);
             serversCsvPrinter.flush();
 
             for (Integer switchId : sample.getEdgeSwitches()) {
@@ -48,9 +48,9 @@ public class NetworkConnectionCSVGenerator {
             }
             edgeSwitchesCsvPrinter.flush();
 
-            for (SampleConnection sampleConnection : sample.getConnections()) {
+            for (SampleConnection sampleConnection : sample.getConnections(0)) {
                 switchersCsvPrinter.printRecord(sampleConnection.getSampleIdStart(), sampleConnection.getSampleStartPort(),
-                        sampleConnection.getSampleIdEnd(), sampleConnection.getSampleEndPort());
+                        sampleConnection.getSampleIdEnd(), sampleConnection.getSampleEndPort(), sampleConnection.getLinkSpeed());
             }
             switchersCsvPrinter.flush();
 
@@ -171,28 +171,32 @@ public class NetworkConnectionCSVGenerator {
             }
         }
 
-        public ArrayList<SampleConnection> getConnections() {
+        public ArrayList<SampleConnection> getConnections(int depth) {
+            long linkSpeed;
+            if (depth < 3) {
+                linkSpeed = Constants.SWITCH_LINK_SPEED_FAST;
+            } else {
+                linkSpeed = Constants.SWITCH_LINK_SPEED_SLOW;
+            }
             ArrayList<SampleConnection> connections = new ArrayList<>();
             if (a != null && b != null && c != null) {
-                connections.addAll(getA().getConnections());
-                connections.addAll(getB().getConnections());
-                connections.addAll(getC().getConnections());
+                connections.addAll(getA().getConnections(depth + 1));
+                connections.addAll(getC().getConnections(depth + 1));
+                connections.addAll(getB().getConnections(depth + 1));
                 if (a instanceof NetworkConnectionCSVGenerator.Switch
                         && b instanceof NetworkConnectionCSVGenerator.Switch
                         && c instanceof NetworkConnectionCSVGenerator.Switch) {
-
-                    connections.add(new SampleConnection(((Switch) a).getId(), ((Switch) b).getId(), 0, 0));
-                    connections.add(new SampleConnection(((Switch) a).getId(), ((Switch) c).getId(), 1, 0));
-                    connections.add(new SampleConnection(((Switch) b).getId(), ((Switch) c).getId(), 1, 1));
+                    connections.add(new SampleConnection(((Switch) a).getId(), ((Switch) b).getId(), 0, 0, linkSpeed));
+                    connections.add(new SampleConnection(((Switch) b).getId(), ((Switch) c).getId(), 1, 1, linkSpeed));
+                    connections.add(new SampleConnection(((Switch) a).getId(), ((Switch) c).getId(), 1, 0, linkSpeed));
                 } else {
-                    connections.add(new SampleConnection(a.getRightConnection().getId(), b.getTopConnection().getId(), 2, 2));
-                    connections.add(new SampleConnection(a.getLeftConnection().getId(), c.getTopConnection().getId(), 2, 2));
-                    connections.add(new SampleConnection(c.getRightConnection().getId(), b.getLeftConnection().getId(), 2, 2));
+                    connections.add(new SampleConnection(a.getRightConnection().getId(), b.getTopConnection().getId(), 2, 2, linkSpeed));
+                    connections.add(new SampleConnection(c.getRightConnection().getId(), b.getLeftConnection().getId(), 2, 2, linkSpeed));
+                    connections.add(new SampleConnection(a.getLeftConnection().getId(), c.getTopConnection().getId(), 2, 2, linkSpeed));
                 }
             }
             return connections;
         }
-
 
         public void getInnerEdge(Sample sample, ArrayList<Integer> edgeSwitchesId) {
             if (sample instanceof Switch) {
@@ -227,12 +231,14 @@ public class NetworkConnectionCSVGenerator {
         private final int sampleIdEnd;
         private final int sampleStartPort;
         private final int sampleEndPort;
+        private final long linkSpeed;
 
-        public SampleConnection(int sampleIdStart, int sampleIdEnd, int sampleStartPort, int sampleEndPort) {
+        public SampleConnection(int sampleIdStart, int sampleIdEnd, int sampleStartPort, int sampleEndPort, long linkSpeed) {
             this.sampleIdStart = sampleIdStart;
             this.sampleIdEnd = sampleIdEnd;
             this.sampleStartPort = sampleStartPort;
             this.sampleEndPort = sampleEndPort;
+            this.linkSpeed = linkSpeed;
         }
 
         public int getSampleIdStart() {
@@ -249,6 +255,10 @@ public class NetworkConnectionCSVGenerator {
 
         public int getSampleEndPort() {
             return sampleEndPort;
+        }
+
+        public long getLinkSpeed() {
+            return linkSpeed;
         }
     }
 

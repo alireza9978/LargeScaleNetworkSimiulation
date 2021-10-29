@@ -3,14 +3,14 @@ package Models.InfrastructureConnections;
 public class NodeActivation {
 
     private final int toActivate;
-    private final int time;
+    private final long time;
 
-    public NodeActivation(int toActivate, int time) {
+    public NodeActivation(int toActivate, long time) {
         this.toActivate = toActivate;
         this.time = time;
     }
 
-    public int getTime() {
+    public long getTime() {
         return time;
     }
 

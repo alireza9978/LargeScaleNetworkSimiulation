@@ -36,7 +36,7 @@ public class NetworkStructureUtil {
         ArrayList<NodeActivation> nodeActivations = new ArrayList<>();
         assert records != null;
         for (CSVRecord record : records) {
-            nodeActivations.add(new NodeActivation(Integer.parseInt(record.get(2)), Integer.parseInt(record.get(0))));
+            nodeActivations.add(new NodeActivation(Integer.parseInt(record.get(2)), Long.parseLong(record.get(0))));
         }
         return nodeActivations;
     }
@@ -47,7 +47,7 @@ public class NetworkStructureUtil {
         assert records != null;
         for (CSVRecord record : records) {
             switchConnections.add(new SwitchConnection(Integer.parseInt(record.get(0)), Integer.parseInt(record.get(2)),
-                    Integer.parseInt(record.get(1)), Integer.parseInt(record.get(3))));
+                    Integer.parseInt(record.get(1)), Integer.parseInt(record.get(3)), Long.parseLong(record.get(4))));
         }
         return switchConnections;
     }
@@ -98,7 +98,7 @@ public class NetworkStructureUtil {
         ArrayList<ServerConnection> serverConnections = new ArrayList<>();
         for (CSVRecord record : records) {
             serverConnections.add(new ServerConnection(Integer.parseInt(record.get(0)), Integer.parseInt(record.get(1)),
-                    Integer.parseInt(record.get(2))));
+                    Integer.parseInt(record.get(2)), Long.parseLong(record.get(3))));
         }
         return serverConnections;
     }

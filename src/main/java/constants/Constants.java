@@ -38,10 +38,14 @@ public class Constants {
     public static final int CLASS_THREE_COUNT = 4;
     public static final int CLASS_FOUR_COUNT = 1;
 
-    // link speed 10Mb/s
-    public static final long LINK_SPEED_IN_SECOND = 10_000_000L;
+    // link speeds
+    public static final long SWITCH_LINK_SPEED_SLOW = 10_000_000L;
+    public static final long SWITCH_LINK_SPEED_FAST = 100_000_000L;
+    public static final long SERVER_LINK_SPEED = 1_000_000_000L;
+    public static final long MAX_LINK_SPEED = Math.max(SERVER_LINK_SPEED, Math.max(SWITCH_LINK_SPEED_SLOW, SWITCH_LINK_SPEED_FAST));
+
     public static final int GCD_CLASSES_PACKET_SIZE = gcd(gcd(gcd(CLASS_ONE_SIZE, CLASS_TWO_SIZE), CLASS_THREE_SIZE), CLASS_FOUR_SIZE);
-    public static final long CLOCK_IN_SECOND = LINK_SPEED_IN_SECOND / GCD_CLASSES_PACKET_SIZE;
+    public static final long CLOCK_IN_SECOND = MAX_LINK_SPEED / GCD_CLASSES_PACKET_SIZE;
     public static final long TOTAL_CLOCK_COUNT = 24L * 60L * 60L * CLOCK_IN_SECOND;
     public static final long SMALL_TOTAL_CLOCK_COUNT = 60L * 60L * CLOCK_IN_SECOND;
     public static final int LINK_SPEED_PER_CLOCK = GCD_CLASSES_PACKET_SIZE;
