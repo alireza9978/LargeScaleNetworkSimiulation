@@ -35,7 +35,7 @@ public class NetworkConnectionCSVGenerator {
                 CSVPrinter vmCsvPrinter = new CSVPrinter(vmWriter, CSVFormat.DEFAULT.withHeader("id", "server", "port", "type"))
 
         ) {
-            Sample sample = createNetwork(2, "");
+            Sample sample = createNetwork(1, "");
 
             long serversLinkSpeed = Constants.SERVER_LINK_SPEED;
             serversCsvPrinter.printRecord(0, sample.getTopConnection().getId(), 2, serversLinkSpeed);
@@ -173,7 +173,7 @@ public class NetworkConnectionCSVGenerator {
 
         public ArrayList<SampleConnection> getConnections(int depth) {
             long linkSpeed;
-            if (depth < 3) {
+            if (depth < 1) {
                 linkSpeed = Constants.SWITCH_LINK_SPEED_FAST;
             } else {
                 linkSpeed = Constants.SWITCH_LINK_SPEED_SLOW;

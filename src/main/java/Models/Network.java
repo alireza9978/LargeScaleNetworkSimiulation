@@ -33,12 +33,14 @@ public class Network {
         initialize();
         ArrayList<SwitchConnection> switchConnections = NetworkStructureUtil.getSwitchesStructure();
         ArrayList<NodeConnection> nodeConnections = NetworkStructureUtil.getNodeStructure();
+        ArrayList<ServerConnection> serverConnections = NetworkStructureUtil.getServerStructure();
+        ArrayList<VirtualMachineConnection> vmConnections = NetworkStructureUtil.getVirtualMachinesStructure();
         switchCount = connectSwitches(switchConnections);
         nodeCount = connectNodes(nodeConnections);
-        serverCount = connectServers(NetworkStructureUtil.getServerStructure());
-        startVirtualMachines(NetworkStructureUtil.getVirtualMachinesStructure());
+        serverCount = connectServers(serverConnections);
+        startVirtualMachines(vmConnections);
         nodeActivations = NetworkStructureUtil.getActiveNodesStructure().toArray(new NodeActivation[0]);
-        GraphMaker.create(switchConnections, nodeConnections);
+        GraphMaker.create(switchConnections, nodeConnections, serverConnections, vmConnections);
     }
 
     private void startVirtualMachines(ArrayList<VirtualMachineConnection> virtualMachineConnections) {

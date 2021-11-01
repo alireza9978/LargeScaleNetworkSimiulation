@@ -6,9 +6,9 @@ public class Constants {
     public static final int MAX_VM_IN_SINGLE_SERVER_COUNT = 10;
     public static final int MAX_SWITCH_COUNT = 1000;
 
-    public static final int MAX_NODE_COUNT = 18_600;
-    // we have 186 edge node maxNodeCount must be dividable by 186
-    public static final int MINIMUM_ACTIVE_NODE_COUNT = 600;
+    public static final int MAX_NODE_COUNT = 186_0;
+    // we have 6 edge node maxNodeCount must be dividable by 6
+    public static final int MINIMUM_ACTIVE_NODE_COUNT = 132;
     // maxNodeCount - minimumActiveNodeCount must be dividable by 24*12
 
     public static final int EDGE_SWITCH_COUNT = 3;
@@ -27,10 +27,10 @@ public class Constants {
     public static final int MAX_BUFFER_PACKET_COUNT = 10000;
 
     // classes packets size in b
-    public static final int CLASS_ONE_SIZE = 4000;
-    public static final int CLASS_TWO_SIZE = 2000;
-    public static final int CLASS_THREE_SIZE = 2000;
-    public static final int CLASS_FOUR_SIZE = 4000;
+    public static final int CLASS_ONE_SIZE = 4;
+    public static final int CLASS_TWO_SIZE = 2;
+    public static final int CLASS_THREE_SIZE = 2;
+    public static final int CLASS_FOUR_SIZE = 4;
 
     // classes packets count in second
     public static final int CLASS_ONE_COUNT = 1;
@@ -39,9 +39,12 @@ public class Constants {
     public static final int CLASS_FOUR_COUNT = 1;
 
     // link speeds
-    public static final long SWITCH_LINK_SPEED_SLOW = 10_000_000L;
-    public static final long SWITCH_LINK_SPEED_FAST = 100_000_000L;
-    public static final long SERVER_LINK_SPEED = 1_000_000_000L;
+    public static final long SWITCH_LINK_SPEED_SLOW = 10_000L;
+    public static final String SWITCH_LINK_SPEED_SLOW_NAME = "10Mb";
+    public static final long SWITCH_LINK_SPEED_FAST = 100_000L;
+    public static final String SWITCH_LINK_SPEED_FAST_NAME = "100Mb";
+    public static final long SERVER_LINK_SPEED = 1_000_000L;
+    public static final String SERVER_LINK_SPEED_NAME = "1Gb";
     public static final long MAX_LINK_SPEED = Math.max(SERVER_LINK_SPEED, Math.max(SWITCH_LINK_SPEED_SLOW, SWITCH_LINK_SPEED_FAST));
 
     public static final int GCD_CLASSES_PACKET_SIZE = gcd(gcd(gcd(CLASS_ONE_SIZE, CLASS_TWO_SIZE), CLASS_THREE_SIZE), CLASS_FOUR_SIZE);
