@@ -5,7 +5,6 @@ import Models.Server;
 import Models.StatsModels.EndToEndDelay;
 import Models.Switch;
 import Models.VirtualMachine;
-import constants.NodeType;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.XYChart;
@@ -22,6 +21,7 @@ public class Visualization {
     private final int hour;
     private final int serverCount;
     private final int switchCount;
+    private final int[] singleServerVmCount;
     private final ArrayList<Integer>[] switchesInputPackets = new ArrayList[MAX_SWITCH_COUNT];
     private final ArrayList<Integer>[] switchesDroppedPackets = new ArrayList[MAX_SWITCH_COUNT];
     private final ArrayList<Float>[] switchesQueuePackets = new ArrayList[MAX_SWITCH_COUNT];
@@ -30,13 +30,14 @@ public class Visualization {
     private final ArrayList<Long> activeNodeCount = new ArrayList<>();
     private final ArrayList<Float> endToEndDelays = new ArrayList<>();
 
-    public Visualization(int hour, int serverCount, int switchCount) {
+    public Visualization(int hour, int serverCount, int switchCount, int[] singleServerVmCount) {
         this.hour = hour;
         this.serverCount = serverCount;
         this.switchCount = switchCount;
+        this.singleServerVmCount = singleServerVmCount;
         for (int i = 0; i < serverCount; i++) {
             serverUtilization[i] = new ArrayList<>();
-            for (int j = 0; j < vmUtilization[i].length; j++){
+            for (int j = 0; j < vmUtilization[i].length; j++) {
                 vmUtilization[i][j] = new ArrayList<>();
             }
         }
@@ -61,7 +62,7 @@ public class Visualization {
             Server s = network.getServer(i);
             serverUtilization[i].add(s.getUtilization());
             VirtualMachine[] virtualMachines = s.getVirtualMachines();
-            for (int j = 0; j < virtualMachines.length; j++) {
+            for (int j = 0; j < s.getVirtualMachinesCount(); j++) {
                 VirtualMachine tempVirtualMachines = virtualMachines[j];
                 if (tempVirtualMachines != null) {
                     vmUtilization[i][j].add(tempVirtualMachines.getUtilization());
@@ -74,7 +75,7 @@ public class Visualization {
     }
 
     public void plot() {
-        for (int i = 0, switchesDataLength = switchesInputPackets.length; i < switchesDataLength; i++) {
+        for (int i = 0; i < switchCount; i++) {
             ArrayList<Integer> inputPacketData = switchesInputPackets[i];
             ArrayList<Integer> droppedPacketData = switchesDroppedPackets[i];
             ArrayList<Float> queuePacketData = switchesQueuePackets[i];
@@ -98,7 +99,7 @@ public class Visualization {
                 e.printStackTrace();
             }
         }
-        for (int i = 0, serversDataLength = serverUtilization.length; i < serversDataLength; i++) {
+        for (int i = 0; i < serverCount; i++) {
             {
                 ArrayList<Float> serverUtilizationData = serverUtilization[i];
 
@@ -112,7 +113,7 @@ public class Visualization {
                     e.printStackTrace();
                 }
             }
-            for (int j = 0; j < vmUtilization[i].length; j++) {
+            for (int j = 0; j < singleServerVmCount[i]; j++) {
                 ArrayList<Float> vm = vmUtilization[i][j];
                 XYChart vmUtilizationChart = QuickChart.getChart("VM utilization in " + hour + "H", "Time", "VM utilization",
                         "server id = " + i + ", vm_id = " + j, xAxis, vm);

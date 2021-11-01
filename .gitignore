@@ -1,1 +1,5 @@
-/src/main/resources/
+/src/main/resources/charts/nodes/*
+/src/main/resources/charts/servers/*
+/src/main/resources/charts/switches/*
+/src/main/resources/charts/vms/*
+/src/main/resources/graphs/*

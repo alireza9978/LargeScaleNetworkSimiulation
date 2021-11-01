@@ -27,6 +27,7 @@ public class Network {
     private final ArrayList<Node> recentlyActivatedNodes = new ArrayList<>();
     private final ArrayList<Node> recentlyDeactivatedNodes = new ArrayList<>();
     private final NodeActivation[] nodeActivations;
+    private final int[] singleServerVmCount;
 
     public Network() {
         activeNodeCount = new long[NodeType.getCount()];
@@ -38,15 +39,18 @@ public class Network {
         switchCount = connectSwitches(switchConnections);
         nodeCount = connectNodes(nodeConnections);
         serverCount = connectServers(serverConnections);
-        startVirtualMachines(vmConnections);
+        singleServerVmCount = startVirtualMachines(vmConnections);
         nodeActivations = NetworkStructureUtil.getActiveNodesStructure().toArray(new NodeActivation[0]);
         GraphMaker.create(switchConnections, nodeConnections, serverConnections, vmConnections);
     }
 
-    private void startVirtualMachines(ArrayList<VirtualMachineConnection> virtualMachineConnections) {
+    private int[] startVirtualMachines(ArrayList<VirtualMachineConnection> virtualMachineConnections) {
+        int[] singleServerVmCount = new int[serverCount];
         for (VirtualMachineConnection connection : virtualMachineConnections) {
             servers[connection.getServerId()].addVM(new VirtualMachine(NodeType.getInstance(connection.getVirtualMachineType()), connection.getServerPort()));
+            singleServerVmCount[connection.getServerId()]++;
         }
+        return singleServerVmCount;
     }
 
     private int connectServers(ArrayList<ServerConnection> serverConnections) {
@@ -154,8 +158,8 @@ public class Network {
         System.out.println("total node in network = " + nodeCount);
 
         activationPointer = updateNodesActivationState(controller, activationPointer, 0);
-        Visualization visualization = new Visualization(hour, serverCount, switchCount);
-
+        Visualization visualization = new Visualization(hour, serverCount, switchCount, singleServerVmCount);
+        CLOCK_IN_SECOND = CLOCK_IN_SECOND / RATIO;
         for (long clock = 1; clock <= ONE_HOUR_CLOCK_COUNT; clock++) {
 
             activateNodes.forEach(Node::run);
@@ -169,14 +173,15 @@ public class Network {
             }
 
             if (clock % FIVE_MINUTE_CLOCK_COUNT == 0) {
-                System.out.println("second = " + clock / CLOCK_IN_SECOND);
+                System.out.println("simulated second = " + clock / CLOCK_IN_SECOND);
+                System.out.println("simulation time in millisecond = " + (System.currentTimeMillis() - start));
                 activationPointer = updateNodesActivationState(controller, activationPointer, clock);
             }
 
             if (clock % ONE_HOUR_CLOCK_COUNT == 0) {
                 hour += 1;
                 visualization.plot();
-                visualization = new Visualization(hour, serverCount, switchCount);
+                visualization = new Visualization(hour, serverCount, switchCount, singleServerVmCount);
                 System.out.println("hour = " + hour);
                 System.gc();
             }
@@ -190,6 +195,7 @@ public class Network {
 
         System.out.println("run time = " +
                 TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds");
+        System.out.println("run time = " + (System.currentTimeMillis() - start) + " milli second");
 
         Arrays.stream(servers).map(Server::toString).forEachOrdered(System.out::println);
 

@@ -35,7 +35,7 @@ public class NetworkConnectionCSVGenerator {
                 CSVPrinter vmCsvPrinter = new CSVPrinter(vmWriter, CSVFormat.DEFAULT.withHeader("id", "server", "port", "type"))
 
         ) {
-            Sample sample = createNetwork(1, "");
+            Sample sample = createNetwork(4, "");
 
             long serversLinkSpeed = Constants.SERVER_LINK_SPEED;
             serversCsvPrinter.printRecord(0, sample.getTopConnection().getId(), 2, serversLinkSpeed);

@@ -57,8 +57,8 @@ public class NetworkStructureUtil {
         assert records != null;
 
         int edgeSwitchCount = records.size();
-        EDGE_SWITCH_NODE_COUNT = MAX_NODE_COUNT / edgeSwitchCount;
-        NODE_COUNT_TOLERANCE = (int) (EDGE_SWITCH_NODE_COUNT * 0.2f);
+        int EDGE_SWITCH_NODE_COUNT = MAX_NODE_COUNT / edgeSwitchCount;
+        int NODE_COUNT_TOLERANCE = (int) (EDGE_SWITCH_NODE_COUNT * 0.2f);
         Random random = new Random();
         ArrayList<NodeConnection> nodeConnections = new ArrayList<>();
         int[] switchNodeCount = new int[edgeSwitchCount];
