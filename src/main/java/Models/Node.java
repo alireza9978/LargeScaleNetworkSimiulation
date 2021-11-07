@@ -8,6 +8,7 @@ public class Node implements Runnable {
     private boolean on = false;
     private static int ID = 0;
     private final NodeType type;
+    private final int delay;
     private Switch connection;
     private int flowNumber = -1;
     private long clock = 0;
@@ -16,14 +17,16 @@ public class Node implements Runnable {
         this.id = ID;
         ID++;
         type = NodeType.getInstanceRandom();
+        delay = NodeType.getStartDelay();
     }
 
     public boolean isOn() {
         return on;
     }
 
-    public void setOn(boolean on) {
+    public void setOn(boolean on, long clock) {
         this.on = on;
+        this.clock = clock;
     }
 
     public Switch getConnection() {
@@ -49,7 +52,7 @@ public class Node implements Runnable {
     @Override
     public void run() {
         if (isOn()) {
-            if (clock % type.getPeriod() == 0) {
+            if (clock % type.getPeriod() == delay) {
                 connection.receive(new Packet(flowNumber, this, type.getSize(), clock));
             }
         }

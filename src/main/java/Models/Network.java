@@ -103,13 +103,13 @@ public class Network {
         }
     }
 
-    public void activateRandomNode(int count) {
+    public void activateRandomNode(int count, long clock) {
         Random random = new Random();
         if (count > 0) {
             for (int i = 0; i < count; i++) {
                 Node node = deactivateNodes.remove(random.nextInt(deactivateNodes.size()));
                 activeNodeCount[node.getType().toInt()]++;
-                node.setOn(true);
+                node.setOn(true, clock);
                 recentlyActivatedNodes.add(node);
             }
         } else {
@@ -117,18 +117,17 @@ public class Network {
             for (int i = 0; i < count; i++) {
                 Node node = activateNodes.remove(random.nextInt(activateNodes.size()));
                 activeNodeCount[node.getType().toInt()]--;
-                node.setOn(false);
+                node.setOn(false, clock);
                 recentlyDeactivatedNodes.add(node);
             }
         }
-
     }
 
 
     private int updateNodesActivationState(Controller controller, int activationPointer, long clock) {
         if (activationPointer < nodeActivations.length)
             if (nodeActivations[activationPointer].getTime() == clock) {
-                activateRandomNode(nodeActivations[activationPointer].getToActivate());
+                activateRandomNode(nodeActivations[activationPointer].getToActivate(), clock);
                 activationPointer++;
                 controller.updatePath(this, recentlyActivatedNodes, recentlyDeactivatedNodes);
                 activateNodes.addAll(recentlyActivatedNodes);
@@ -149,18 +148,17 @@ public class Network {
             }
         }
 
-        long start = System.currentTimeMillis();
-        int hour = 0;
-        int activationPointer = 0;
 
+        int activationPointer = 0;
+        activationPointer = updateNodesActivationState(controller, activationPointer, 0);
+        int hour = 0;
         System.out.println("link Speed in clock = " + Constants.LINK_SPEED_PER_CLOCK);
         System.out.println("total clock = " + TOTAL_CLOCK_COUNT);
         System.out.println("total node in network = " + nodeCount);
-
-        activationPointer = updateNodesActivationState(controller, activationPointer, 0);
         Visualization visualization = new Visualization(hour, serverCount, switchCount, singleServerVmCount);
-        CLOCK_IN_SECOND = CLOCK_IN_SECOND / RATIO;
-        for (long clock = 1; clock <= ONE_HOUR_CLOCK_COUNT; clock++) {
+
+        long start = System.currentTimeMillis();
+        for (long clock = 1; clock <= TOTAL_CLOCK_COUNT / 30; clock++) {
 
             activateNodes.forEach(Node::run);
 
@@ -172,26 +170,21 @@ public class Network {
                 server.run(clock);
             }
 
-            if (clock % FIVE_MINUTE_CLOCK_COUNT == 0) {
+            if (clock % CLOCK_IN_SECOND == 0) {
                 System.out.println("simulated second = " + clock / CLOCK_IN_SECOND);
                 System.out.println("simulation time in millisecond = " + (System.currentTimeMillis() - start));
                 activationPointer = updateNodesActivationState(controller, activationPointer, clock);
-            }
-
-            if (clock % ONE_HOUR_CLOCK_COUNT == 0) {
-                hour += 1;
-                visualization.plot();
-                visualization = new Visualization(hour, serverCount, switchCount, singleServerVmCount);
-                System.out.println("hour = " + hour);
-                System.gc();
             }
 
             if (clock % CLOCK_IN_SECOND == 0) {
                 controller.updatePath(this);
                 visualization.getData(this);
             }
-
         }
+
+        visualization.plot();
+        System.out.println("hour = " + hour);
+        System.gc();
 
         System.out.println("run time = " +
                 TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds");

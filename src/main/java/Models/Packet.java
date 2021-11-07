@@ -1,5 +1,7 @@
 package Models;
 
+import constants.Constants;
+
 public class Packet {
 
     public int flowNumber = -1;
@@ -34,8 +36,8 @@ public class Packet {
         return creationTime;
     }
 
-    public long getEndToEndDelay(long now){
-        return now - creationTime;
+    public float getEndToEndDelay(long now) {
+        return (float) (now - creationTime) / Constants.CLOCK_IN_SECOND;
     }
 
 }

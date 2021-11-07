@@ -94,5 +94,8 @@ public enum NodeType {
         return -1;
     }
 
+    public static int getStartDelay(){
+        return random.nextInt((int) Constants.CLOCK_IN_SECOND);
+    }
 
 }
