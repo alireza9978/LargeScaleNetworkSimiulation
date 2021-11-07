@@ -34,9 +34,9 @@ public class Constants {
 
     // link speeds
     public static final long SWITCH_LINK_SPEED_SLOW = 50_000_000L;
-    public static final String SWITCH_LINK_SPEED_SLOW_NAME = "10Mb";
+    public static final String SWITCH_LINK_SPEED_SLOW_NAME = "50Mb";
     public static final long SWITCH_LINK_SPEED_FAST = 50_000_000L;
-    public static final String SWITCH_LINK_SPEED_FAST_NAME = "20Mb";
+    public static final String SWITCH_LINK_SPEED_FAST_NAME = "50Mb";
     public static final long SERVER_LINK_SPEED = 50_000_000L;
     public static final String SERVER_LINK_SPEED_NAME = "50Mb";
 
@@ -58,7 +58,7 @@ public class Constants {
 
     public static final String FIGURE_DIR = "src/main/resources/charts/";
     public static final String GRAPH_DIR = "src/main/resources/graphs/";
-    public static final String ROOT_DIR = "/home/alireza/projects/java/largeScaleNetworkSimulation/";
+    public static final String ROOT_DIR = "C:\\Users\\IP_PBX\\IdeaProjects\\LargeScaleNetworkSimiulation\\";
 
 
     // Recursive function to return gcd of a and b

@@ -24,7 +24,7 @@ public class MainChartTest {
 
             // or save it in high-res
             BitmapEncoder.saveBitmapWithDPI(chart, FIGURE_DIR + "Sample_Chart_300_DPI",
-                    BitmapEncoder.BitmapFormat.PNG, 300);
+                    BitmapEncoder.BitmapFormat.PNG, 1000);
         } catch (IOException e) {
             e.printStackTrace();
         }

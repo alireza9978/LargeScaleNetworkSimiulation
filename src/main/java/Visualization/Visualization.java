@@ -90,11 +90,11 @@ public class Visualization {
             try {
                 // or save it in high-res
                 BitmapEncoder.saveBitmapWithDPI(inputPacketChart, FIGURE_DIR + "switches/switch_" + i + "_hour_" + hour + "_input",
-                        BitmapEncoder.BitmapFormat.PNG, 300);
+                        BitmapEncoder.BitmapFormat.PNG, 1000);
                 BitmapEncoder.saveBitmapWithDPI(queuePacketChart, FIGURE_DIR + "switches/switch_" + i + "_hour_" + hour + "_queue",
-                        BitmapEncoder.BitmapFormat.PNG, 300);
+                        BitmapEncoder.BitmapFormat.PNG, 1000);
                 BitmapEncoder.saveBitmapWithDPI(droppedPacketChart, FIGURE_DIR + "switches/switch_" + i + "_hour_" + hour + "_dropped",
-                        BitmapEncoder.BitmapFormat.PNG, 300);
+                        BitmapEncoder.BitmapFormat.PNG, 1000);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -108,7 +108,7 @@ public class Visualization {
 
                 try {
                     BitmapEncoder.saveBitmapWithDPI(serverUtilizationChart, FIGURE_DIR + "servers/server_" + i + "_hour_" + hour,
-                            BitmapEncoder.BitmapFormat.PNG, 300);
+                            BitmapEncoder.BitmapFormat.PNG, 1000);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -121,7 +121,7 @@ public class Visualization {
                 try {
                     BitmapEncoder.saveBitmapWithDPI(vmUtilizationChart,
                             FIGURE_DIR + "vms/server_" + i + "_vm_" + j + "_hour_" + hour,
-                            BitmapEncoder.BitmapFormat.PNG, 300);
+                            BitmapEncoder.BitmapFormat.PNG, 1000);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -133,7 +133,7 @@ public class Visualization {
                     "all node type", xAxis, activeNodeCount);
             try {
                 BitmapEncoder.saveBitmapWithDPI(queuePacketChart, FIGURE_DIR + "nodes/activeNodeCount_hour_" + hour,
-                        BitmapEncoder.BitmapFormat.PNG, 300);
+                        BitmapEncoder.BitmapFormat.PNG, 1000);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -143,7 +143,7 @@ public class Visualization {
                     "all node type", xAxis, endToEndDelays);
             try {
                 BitmapEncoder.saveBitmapWithDPI(endToEndDelaysChart, FIGURE_DIR + "nodes/endToEndDelay_hour_" + hour,
-                        BitmapEncoder.BitmapFormat.PNG, 300);
+                        BitmapEncoder.BitmapFormat.PNG, 1000);
             } catch (IOException e) {
                 e.printStackTrace();
             }

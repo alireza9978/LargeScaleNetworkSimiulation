@@ -34,7 +34,7 @@ public class Buffer {
     public void simulate() {
         if (sendingPacket == null) {
             if (!queue.isEmpty()) {
-                sendingPacket = queue.poll();
+                sendingPacket = queue.pop();
                 sendingPacketCyclePassed = 0;
                 sendingPacketTotalCycle = sendingPacket.size / Constants.LINK_SPEED_PER_CLOCK;
             }
