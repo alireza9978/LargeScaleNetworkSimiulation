@@ -3,3 +3,5 @@
 /src/main/resources/charts/switches/*
 /src/main/resources/charts/vms/*
 /src/main/resources/graphs/*
+/src/main/resources/tests/*
+/src/main/*.zip

@@ -26,7 +26,7 @@ public class Buffer {
             queue.add(packet);
             return true;
         } else {
-            System.out.println("Buffer overflow in switch " + switchId + " port " + port);
+//            System.out.println("Buffer overflow in switch " + switchId + " port " + port);
             return false;
         }
     }

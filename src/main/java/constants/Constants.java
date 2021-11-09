@@ -13,10 +13,10 @@ public class Constants {
     public static final int SERVER_MAX_VM_COUNT = 10;
 
     // packets that each server can process in a second
-    public static final int SERVER_MAX_PROCESSING_PACKET_IN_SECOND = 15000;
+    public static final int SERVER_MAX_PROCESSING_PACKET_IN_SECOND = 16000;
 
     // packets that each vm can process in a second
-    public static final int MAX_VM_PACKET_COUNT_PROCESS_SPEED = 5000;
+    public static final int MAX_VM_PACKET_COUNT_PROCESS_SPEED = 4000;
 
     public static final int MAX_BUFFER_PACKET_COUNT = 10;
 
@@ -33,12 +33,12 @@ public class Constants {
     public static final int CLASS_FOUR_COUNT = 1;
 
     // link speeds
-    public static final long SWITCH_LINK_SPEED_SLOW = 50_000_000L;
-    public static final String SWITCH_LINK_SPEED_SLOW_NAME = "50Mb";
-    public static final long SWITCH_LINK_SPEED_FAST = 50_000_000L;
-    public static final String SWITCH_LINK_SPEED_FAST_NAME = "50Mb";
-    public static final long SERVER_LINK_SPEED = 50_000_000L;
-    public static final String SERVER_LINK_SPEED_NAME = "50Mb";
+    public static final long SWITCH_LINK_SPEED_SLOW = 30_000_000L;
+    public static final String SWITCH_LINK_SPEED_SLOW_NAME = "30Mb";
+    public static final long SWITCH_LINK_SPEED_FAST = 30_000_000L;
+    public static final String SWITCH_LINK_SPEED_FAST_NAME = "30Mb";
+    public static final long SERVER_LINK_SPEED = 30_000_000L;
+    public static final String SERVER_LINK_SPEED_NAME = "30Mb";
 
     public static final long MAX_LINK_SPEED = Math.max(SERVER_LINK_SPEED, Math.max(SWITCH_LINK_SPEED_SLOW, SWITCH_LINK_SPEED_FAST));
     public static final int GCD_CLASSES_PACKET_SIZE = gcd(gcd(gcd(CLASS_ONE_SIZE, CLASS_TWO_SIZE), CLASS_THREE_SIZE), CLASS_FOUR_SIZE);
@@ -56,9 +56,10 @@ public class Constants {
     public static final int CLASS_THREE_CYCLE = (int) (CLOCK_IN_SECOND / CLASS_THREE_COUNT);
     public static final int CLASS_FOUR_CYCLE = (int) (CLOCK_IN_SECOND / CLASS_FOUR_COUNT);
 
+    public static final String TEST_DIR = "src/main/resources/tests/";
     public static final String FIGURE_DIR = "src/main/resources/charts/";
     public static final String GRAPH_DIR = "src/main/resources/graphs/";
-    public static final String ROOT_DIR = "C:\\Users\\IP_PBX\\IdeaProjects\\LargeScaleNetworkSimiulation\\";
+    public static final String ROOT_DIR = "/home/ippbx/IdeaProjects/LargeScaleNetworkSimiulation/";
 
 
     // Recursive function to return gcd of a and b

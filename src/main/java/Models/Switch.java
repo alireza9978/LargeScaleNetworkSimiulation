@@ -80,7 +80,7 @@ public class Switch implements Receiver, Runnable {
 
 
     @Override
-    public void receive(Packet packet) {
+    synchronized public void receive(Packet packet) {
         if (packet == null) {
             System.out.println("null income");
         } else

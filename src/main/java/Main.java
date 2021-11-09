@@ -1,5 +1,6 @@
 import FileGenerator.NodeStateCSVGenerator;
 import FileGenerator.NetworkConnectionCSVGenerator;
+import FileGenerator.NodeStateCSVGeneratorGaussian;
 import Models.Network;
 import Models.controllers.ShortestPathController;
 import Models.controllers.SimpleFileBasedController;
@@ -10,7 +11,7 @@ public class Main {
     public static void main(String[] args) {
 
         System.out.println("generating network structure files");
-        NodeStateCSVGenerator nodeStateCSVGenerator = new NodeStateCSVGenerator();
+        NodeStateCSVGeneratorGaussian nodeStateCSVGenerator = new NodeStateCSVGeneratorGaussian();
         nodeStateCSVGenerator.create();
         NetworkConnectionCSVGenerator networkConnectionCSVGenerator = new NetworkConnectionCSVGenerator();
         networkConnectionCSVGenerator.create();

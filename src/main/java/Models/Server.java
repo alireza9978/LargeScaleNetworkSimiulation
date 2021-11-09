@@ -10,8 +10,7 @@ public class Server implements Receiver {
     private static int ID = 0;
     private final VirtualMachine[] virtualMachines;
     private int virtualMachinesCount = 0;
-    private long totalPacket = 0;
-    private long totalPacketUntilLastSecond = 0;
+    private long cycleProcessedPackets = 0;
 
     public Server() {
         this.id = ID;
@@ -40,7 +39,7 @@ public class Server implements Receiver {
     @Override
     public void receive(Packet packet) {
         virtualMachines[packet.getSender().getType().toInt()].receive(packet);
-        totalPacket++;
+        cycleProcessedPackets += 1;
     }
 
     public void run(long clock) {
@@ -59,16 +58,15 @@ public class Server implements Receiver {
                 '}';
     }
 
-    public long getTotalPacket() {
-        return totalPacket;
+    public Long getCyclePackets() {
+        return cycleProcessedPackets;
     }
 
     public Float getUtilization() {
-        float temp = (float) (totalPacket - totalPacketUntilLastSecond) / (float) Constants.SERVER_MAX_PROCESSING_PACKET_IN_SECOND;
-        totalPacketUntilLastSecond = totalPacket;
+        float temp = (float) (cycleProcessedPackets) / (float) Constants.SERVER_MAX_PROCESSING_PACKET_IN_SECOND;
+        cycleProcessedPackets = 0;
         return temp;
     }
-
     public VirtualMachine[] getVirtualMachines() {
         return virtualMachines;
     }

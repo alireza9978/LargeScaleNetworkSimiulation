@@ -105,6 +105,7 @@ public class Network {
 
     public void activateRandomNode(int count, long clock) {
         Random random = new Random();
+        System.out.println("random node activation = " + count);
         if (count > 0) {
             for (int i = 0; i < count; i++) {
                 Node node = deactivateNodes.remove(random.nextInt(deactivateNodes.size()));
@@ -148,7 +149,6 @@ public class Network {
             }
         }
 
-
         int activationPointer = 0;
         activationPointer = updateNodesActivationState(controller, activationPointer, 0);
         int hour = 0;
@@ -158,9 +158,9 @@ public class Network {
         Visualization visualization = new Visualization(hour, serverCount, switchCount, singleServerVmCount);
 
         long start = System.currentTimeMillis();
-        for (long clock = 1; clock <= TOTAL_CLOCK_COUNT / 30; clock++) {
+        for (long clock = 1; clock <= TOTAL_CLOCK_COUNT; clock++) {
 
-            activateNodes.forEach(Node::run);
+            activateNodes.parallelStream().forEach(Node::run);
 
             Arrays.stream(switches).forEachOrdered(Switch::routeReceivedPackets);
 

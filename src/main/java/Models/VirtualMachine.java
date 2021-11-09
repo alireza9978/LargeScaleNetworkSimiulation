@@ -7,7 +7,6 @@ import constants.NodeType;
 public class VirtualMachine implements Receiver {
 
     private final NodeType type;
-    private int totalProcessedPackets = 0;
     private int cycleProcessedPackets = 0;
     public final int listeningPort;
     public final int id;
@@ -37,7 +36,6 @@ public class VirtualMachine implements Receiver {
     }
 
     public void simulate(long clock) {
-        totalProcessedPackets += cycleProcessedPackets;
         this.clock = clock;
     }
 
@@ -47,10 +45,6 @@ public class VirtualMachine implements Receiver {
 
     public NodeType getType() {
         return type;
-    }
-
-    public int getTotalProcessedPackets() {
-        return totalProcessedPackets;
     }
 
     public int getCycleProcessedPackets() {
@@ -65,13 +59,12 @@ public class VirtualMachine implements Receiver {
     public String toString() {
         return "VirtualMachine{" +
                 "type=" + type +
-                ", totalProcessedPackets=" + totalProcessedPackets +
                 ", id=" + id +
                 '}';
     }
 
     public Float getUtilization() {
-        float temp = (float) (cycleProcessedPackets) / (float) Constants.SERVER_MAX_PROCESSING_PACKET_IN_SECOND;
+        float temp = (float) (cycleProcessedPackets) / (float) Constants.MAX_VM_PACKET_COUNT_PROCESS_SPEED;
         cycleProcessedPackets = 0;
         return temp;
     }
