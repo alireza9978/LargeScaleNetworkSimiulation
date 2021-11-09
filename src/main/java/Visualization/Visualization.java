@@ -5,6 +5,7 @@ import Models.Server;
 import Models.StatsModels.EndToEndDelay;
 import Models.Switch;
 import Models.VirtualMachine;
+import constants.NodeType;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.XYChart;
@@ -24,13 +25,13 @@ public class Visualization {
     private final int switchCount;
     private final int[] singleServerVmCount;
     private final ArrayList<Integer>[] switchesInputPackets = new ArrayList[MAX_SWITCH_COUNT];
-    private final ArrayList<Integer>[] switchesDroppedPackets = new ArrayList[MAX_SWITCH_COUNT];
+    private final ArrayList<Integer[]>[] switchesDroppedPackets = new ArrayList[MAX_SWITCH_COUNT];
     private final ArrayList<Float>[] switchesQueuePackets = new ArrayList[MAX_SWITCH_COUNT];
     private final ArrayList<Float>[] serverUtilization = new ArrayList[MAX_SERVER_COUNT];
     private final ArrayList<Long>[] serverInputPackets = new ArrayList[MAX_SERVER_COUNT];
     private final ArrayList<Float>[][] vmUtilization = new ArrayList[MAX_SERVER_COUNT][MAX_VM_IN_SINGLE_SERVER_COUNT];
     private final ArrayList<Long> activeNodeCount = new ArrayList<>();
-    private final ArrayList<Float> endToEndDelays = new ArrayList<>();
+    private final ArrayList<EndToEndDelay> endToEndDelays = new ArrayList<>();
 
     public Visualization(int hour, int serverCount, int switchCount, int[] singleServerVmCount) {
         this.hour = hour;
@@ -55,10 +56,10 @@ public class Visualization {
         xAxis.add(clock);
         clock++;
         for (int i = 0; i < switchCount; i++) {
-            Switch s = network.getSwitch(i);
-            switchesInputPackets[i].add(s.getInputPacketsCount());
-            switchesQueuePackets[i].add(s.getQueuePacketsCount());
-            switchesDroppedPackets[i].add(s.getDroppedPacketsCount());
+            Switch networkSwitch = network.getSwitch(i);
+            switchesInputPackets[i].add(networkSwitch.getInputPacketsCount());
+            switchesQueuePackets[i].add(networkSwitch.getQueuePacketsCount());
+            switchesDroppedPackets[i].add(networkSwitch.getDroppedPacketsCount());
         }
         EndToEndDelay endToEndDelay = new EndToEndDelay();
         for (int i = 0; i < serverCount; i++) {
@@ -74,13 +75,21 @@ public class Visualization {
                 }
             }
         }
-        endToEndDelays.add(endToEndDelay.getAverage());
+        endToEndDelays.add(endToEndDelay);
         activeNodeCount.add(network.getActiveNodeCount());
     }
 
     synchronized void plotSwitch(int i) {
         ArrayList<Integer> inputPacketData = switchesInputPackets[i];
-        ArrayList<Integer> droppedPacketData = switchesDroppedPackets[i];
+        ArrayList<Integer[]> droppedPacketDataClass = switchesDroppedPackets[i];
+        ArrayList<Long> droppedPacketData = new ArrayList<>();
+        for (Integer[] packetDataClass : droppedPacketDataClass) {
+            long temp = 0;
+            for (int k = 0; k < NodeType.getCount(); k++) {
+                temp += packetDataClass[k];
+            }
+            droppedPacketData.add(temp);
+        }
         ArrayList<Float> queuePacketData = switchesQueuePackets[i];
         // Create Chart
         XYChart inputPacketChart = QuickChart.getChart("switch input packet in " + hour + "H", "Time", "input packet count",
@@ -159,8 +168,13 @@ public class Visualization {
             }
         }
         {
+            ArrayList<Float> delay = new ArrayList<>();
+            for (EndToEndDelay endToEndDelay : endToEndDelays
+            ) {
+                delay.add(endToEndDelay.getAverage());
+            }
             XYChart endToEndDelaysChart = QuickChart.getChart("End-to-End Delay in " + hour + "H", "Time", "End-To-End Delay",
-                    "all node type", xAxis, endToEndDelays);
+                    "all node type", xAxis, delay);
             try {
                 BitmapEncoder.saveBitmapWithDPI(endToEndDelaysChart, FIGURE_DIR + "nodes/endToEndDelay_hour_" + hour,
                         BitmapEncoder.BitmapFormat.PNG, 500);
@@ -169,18 +183,133 @@ public class Visualization {
             }
         }
         {
+            for (int i = 0; i < NodeType.getCount(); i++) {
+                ArrayList<Float> delay = new ArrayList<>();
+                for (EndToEndDelay endToEndDelay : endToEndDelays
+                ) {
+                    delay.add(endToEndDelay.getAverage(i));
+                }
+                XYChart endToEndDelaysChart = QuickChart.getChart("End-to-End Delay in " + hour + "H", "Time", "End-To-End Delay",
+                        "all node type= " + i, xAxis, delay);
+                try {
+                    BitmapEncoder.saveBitmapWithDPI(endToEndDelaysChart, FIGURE_DIR + "nodes/endToEndDelay_type_" + i + "_hour_" + hour,
+                            BitmapEncoder.BitmapFormat.PNG, 500);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        {
             ArrayList<Long> droppedPackets = new ArrayList<>();
             for (int i = 0; i < switchesDroppedPackets[0].size(); i++) {
                 long temp = 0;
                 for (int j = 0; j < switchCount; j++) {
-                    temp += switchesDroppedPackets[j].get(i);
+                    for (int k = 0; k < NodeType.getCount(); k++) {
+                        temp += switchesDroppedPackets[j].get(i)[k];
+                    }
                 }
                 droppedPackets.add(temp);
             }
             XYChart endToEndDelaysChart = QuickChart.getChart("total dropped packets in " + hour + "H", "Time", "Count",
                     "all switches", xAxis, droppedPackets);
             try {
-                BitmapEncoder.saveBitmapWithDPI(endToEndDelaysChart, FIGURE_DIR + "nodes/dropped_packets_hour_" + hour,
+                BitmapEncoder.saveBitmapWithDPI(endToEndDelaysChart, FIGURE_DIR + "total/dropped_packets_hour_" + hour,
+                        BitmapEncoder.BitmapFormat.PNG, 500);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        {
+            for (int k = 0; k < NodeType.getCount(); k++) {
+                ArrayList<Long> droppedPackets = new ArrayList<>();
+                for (int i = 0; i < switchesDroppedPackets[0].size(); i++) {
+                    long temp = 0;
+                    for (int j = 0; j < switchCount; j++) {
+                        temp += switchesDroppedPackets[j].get(i)[k];
+                    }
+                    droppedPackets.add(temp);
+                }
+                XYChart endToEndDelaysChart = QuickChart.getChart("total dropped packets in type" + k + "_" + hour + "H", "Time", "Count",
+                        "all switches type " + k, xAxis, droppedPackets);
+                try {
+                    BitmapEncoder.saveBitmapWithDPI(endToEndDelaysChart, FIGURE_DIR + "total/dropped_packets_type_" + k + "_hour_" + hour,
+                            BitmapEncoder.BitmapFormat.PNG, 500);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        {
+            ArrayList<Float> queueSizePackets = new ArrayList<>();
+            for (int i = 0; i < switchesQueuePackets[0].size(); i++) {
+                float temp = 0;
+                for (int j = 0; j < switchCount; j++) {
+                    temp += switchesQueuePackets[j].get(i);
+                }
+                queueSizePackets.add(temp / switchCount);
+            }
+            XYChart endToEndDelaysChart = QuickChart.getChart("total queue size in " + hour + "H", "Time", "Count",
+                    "all switches", xAxis, queueSizePackets);
+            try {
+                BitmapEncoder.saveBitmapWithDPI(endToEndDelaysChart, FIGURE_DIR + "total/queue_size_hour_" + hour,
+                        BitmapEncoder.BitmapFormat.PNG, 500);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        {
+            ArrayList<Float> totalServerUtilization = new ArrayList<>();
+            for (int i = 0; i < serverUtilization[0].size(); i++) {
+                float temp = 0;
+                for (int j = 0; j < serverCount; j++) {
+                    temp += serverUtilization[j].get(i);
+                }
+                totalServerUtilization.add(temp / serverCount);
+            }
+            XYChart serversUtilizationChart = QuickChart.getChart("server utilization in " + hour + "H", "Time", "utilization",
+                    "all servers", xAxis, totalServerUtilization);
+            try {
+                BitmapEncoder.saveBitmapWithDPI(serversUtilizationChart, FIGURE_DIR + "total/server_utilization_hour_" + hour,
+                        BitmapEncoder.BitmapFormat.PNG, 500);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        {
+            ArrayList<Long> totalPackets = new ArrayList<>();
+            for (int i = 0; i < serverInputPackets[0].size(); i++) {
+                long temp = 0;
+                for (int j = 0; j < serverCount; j++) {
+                    temp += serverInputPackets[j].get(i);
+                }
+                for (int j = 0; j < switchCount; j++) {
+                    temp += switchesInputPackets[j].get(i);
+                }
+                totalPackets.add(temp);
+            }
+            XYChart serversUtilizationChart = QuickChart.getChart("total packets in " + hour + "H", "Time", "packet count",
+                    "all servers and switches", xAxis, totalPackets);
+            try {
+                BitmapEncoder.saveBitmapWithDPI(serversUtilizationChart, FIGURE_DIR + "total/packet_counts_hour_" + hour,
+                        BitmapEncoder.BitmapFormat.PNG, 500);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        {
+            ArrayList<Long> totalPackets = new ArrayList<>();
+            for (int i = 0; i < serverInputPackets[0].size(); i++) {
+                long temp = 0;
+                for (int j = 0; j < serverCount; j++) {
+                    temp += serverInputPackets[j].get(i);
+                }
+                totalPackets.add(temp);
+            }
+            XYChart serversUtilizationChart = QuickChart.getChart("total packets in " + hour + "H", "Time", "packet count",
+                    "all servers", xAxis, totalPackets);
+            try {
+                BitmapEncoder.saveBitmapWithDPI(serversUtilizationChart, FIGURE_DIR + "total/output_packet_counts_hour_" + hour,
                         BitmapEncoder.BitmapFormat.PNG, 500);
             } catch (IOException e) {
                 e.printStackTrace();

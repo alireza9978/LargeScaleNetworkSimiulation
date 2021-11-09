@@ -13,8 +13,11 @@ public class SimpleShortestPathController extends Controller {
 
     @Override
     public void initialize(Network network) {
+        Random random = new Random();
         for (int i = 0; i < network.getNodeCount(); i++) {
             network.getNode(i).setFlowNumber(i);
+            int targetServerId = random.nextInt(network.getServerCount());
+            network.getNode(i).setTargetServer(targetServerId);
         }
         for (int i = 0; i < network.getSwitchCount(); i++) {
             network.getSwitch(i).updateRoutingSetting(new Hashtable<>());
@@ -69,10 +72,8 @@ public class SimpleShortestPathController extends Controller {
 
     @Override
     public void updatePath(Network network, ArrayList<Node> activatedNode, ArrayList<Node> deactivatedNode) {
-        Random random = new Random();
         for (Node node : activatedNode) {
-            int targetServerId = random.nextInt(network.getServerCount());
-            setPathBFS(network, node.getConnection().getId(), node.id, targetServerId);
+            setPathBFS(network, node.getConnection().getId(), node.id, node.getTargetServer());
         }
     }
 

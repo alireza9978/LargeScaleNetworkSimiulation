@@ -1,6 +1,7 @@
 package Models;
 
 import constants.Constants;
+import constants.NodeType;
 import constants.Pair;
 
 import java.util.ArrayList;
@@ -16,14 +17,18 @@ public class Switch implements Receiver, Runnable {
     private int inputPacketsCount = 0;
     private int sumPacketCountInQueue = 0;
     private int clockForAverage = 0;
-    private ArrayList<Pair<Integer, Integer>> switchesConnections = new ArrayList<>();
-    private ArrayList<Pair<Integer, Integer>> serversConnections = new ArrayList<>();
-    private int droppedPacket = 0;
+    private final ArrayList<Pair<Integer, Integer>> switchesConnections = new ArrayList<>();
+    private final ArrayList<Pair<Integer, Integer>> serversConnections = new ArrayList<>();
+    private Integer[] droppedPacket;
 
     public Switch() {
         this.id = ID;
         ID++;
         buffers = new Buffer[Constants.SWITCH_MAX_CONNECTION_COUNT];
+        droppedPacket = new Integer[NodeType.getCount()];
+        for (int i = 0; i < NodeType.getCount(); i++) {
+            droppedPacket[i] = 0;
+        }
     }
 
     public boolean isConnected() {
@@ -61,14 +66,16 @@ public class Switch implements Receiver, Runnable {
         routingSetting.put(key, value);
     }
 
-    public void routeReceivedPackets() {
+    synchronized public void routeReceivedPackets() {
         inputPacketsCount += inputPackets.size();
         for (Packet packet : inputPackets) {
             if (packet != null) {
                 Integer targetBuffer = routingSetting.get(packet.flowNumber);
                 if (targetBuffer != null) {
-                    if(!buffers[targetBuffer].addPacket(packet)){
-                        droppedPacket++;
+                    if (!buffers[targetBuffer].addPacket(packet)) {
+                        int temp = packet.getSender().getType().toInt();
+                        if (temp < NodeType.getCount() && temp > -1)
+                            droppedPacket[temp]++;
                     }
                 }
             } else {
@@ -112,9 +119,12 @@ public class Switch implements Receiver, Runnable {
         return temp;
     }
 
-    public int getDroppedPacketsCount() {
-        int temp = droppedPacket;
-        droppedPacket = 0;
+    public Integer[] getDroppedPacketsCount() {
+        Integer[] temp = droppedPacket;
+        droppedPacket = new Integer[NodeType.getCount()];
+        for (int i = 0; i < NodeType.getCount(); i++) {
+            droppedPacket[i] = 0;
+        }
         return temp;
     }
 

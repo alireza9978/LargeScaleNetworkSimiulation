@@ -18,7 +18,7 @@ public class Constants {
     // packets that each vm can process in a second
     public static final int MAX_VM_PACKET_COUNT_PROCESS_SPEED = 4000;
 
-    public static final int MAX_BUFFER_PACKET_COUNT = 10;
+    public static final int MAX_BUFFER_PACKET_COUNT = 100;
 
     // classes packets size in b
     public static final int CLASS_ONE_SIZE = 2000;
@@ -45,7 +45,8 @@ public class Constants {
 
     public static long CLOCK_IN_SECOND = MAX_LINK_SPEED / GCD_CLASSES_PACKET_SIZE;
 
-    public static final long TOTAL_CLOCK_COUNT = 60L * 60L * CLOCK_IN_SECOND;
+    public static final long TOTAL_CLOCK_COUNT = 60L * CLOCK_IN_SECOND;
+    public static final long MAIN_CLOCK_IN_SECOND = TOTAL_CLOCK_COUNT / 60L * 60L * 24L;
     public static final int LINK_SPEED_PER_CLOCK = GCD_CLASSES_PACKET_SIZE;
 //    public static final long ONE_HOUR_CLOCK_COUNT = 60L * 60L * CLOCK_IN_SECOND;
 //    public static final long FIVE_MINUTE_CLOCK_COUNT = 5L * 60L * CLOCK_IN_SECOND;

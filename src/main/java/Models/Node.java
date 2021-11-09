@@ -10,6 +10,7 @@ public class Node implements Runnable {
     private final NodeType type;
     private final int delay;
     private Switch connection;
+    private int targetServer;
     private int flowNumber = -1;
     private long clock = 0;
 
@@ -57,5 +58,13 @@ public class Node implements Runnable {
             }
         }
         clock++;
+    }
+
+    public int getTargetServer() {
+        return targetServer;
+    }
+
+    public void setTargetServer(int targetServer) {
+        this.targetServer = targetServer;
     }
 }

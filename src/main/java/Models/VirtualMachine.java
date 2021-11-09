@@ -29,7 +29,7 @@ public class VirtualMachine implements Receiver {
         }
         if (packet.getSender().getType().equals(type)) {
             cycleProcessedPackets += 1;
-            endToEndDelay.addPacket(packet.getEndToEndDelay(clock));
+            endToEndDelay.addPacket(packet.getEndToEndDelay(clock), packet.getSender().getType().toInt());
         } else {
             System.out.println("VM id=" + id + " has a wrong input packet");
         }

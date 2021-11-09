@@ -170,13 +170,13 @@ public class Network {
                 server.run(clock);
             }
 
-            if (clock % CLOCK_IN_SECOND == 0) {
-                System.out.println("simulated second = " + clock / CLOCK_IN_SECOND);
+            if (clock % MAIN_CLOCK_IN_SECOND == 0) {
+                System.out.println("simulated second = " + clock / MAIN_CLOCK_IN_SECOND);
                 System.out.println("simulation time in millisecond = " + (System.currentTimeMillis() - start));
                 activationPointer = updateNodesActivationState(controller, activationPointer, clock);
             }
 
-            if (clock % CLOCK_IN_SECOND == 0) {
+            if (clock % MAIN_CLOCK_IN_SECOND == 0) {
                 controller.updatePath(this);
                 visualization.getData(this);
             }
