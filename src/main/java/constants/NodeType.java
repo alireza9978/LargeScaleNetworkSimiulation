@@ -4,10 +4,21 @@ import java.util.Random;
 
 public enum NodeType {
 
-    health,
-    traffic,
-    securityCamera,
-    powerConsumption;
+    health("health"),
+    traffic("traffic"),
+    securityCamera("security camera"),
+    powerConsumption("power consumption");
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
+
+    NodeType(String name) {
+        this.name = name;
+    }
+
+    public final String name;
 
     private static final Random random = new Random();
 
@@ -18,6 +29,24 @@ public enum NodeType {
     public static NodeType getInstance(String id) {
         int tempId = Integer.parseInt(id);
         switch (tempId) {
+            case 0: {
+                return health;
+            }
+            case 1: {
+                return traffic;
+            }
+            case 2: {
+                return securityCamera;
+            }
+            case 3: {
+                return powerConsumption;
+            }
+        }
+        return null;
+    }
+
+    public static NodeType getInstance(int id) {
+        switch (id) {
             case 0: {
                 return health;
             }

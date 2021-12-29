@@ -5,3 +5,4 @@
 /src/main/resources/graphs/*
 /src/main/resources/tests/*
 /src/main/*.zip
+/src/main/resources/results.csv

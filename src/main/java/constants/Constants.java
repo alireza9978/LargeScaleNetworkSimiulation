@@ -8,6 +8,7 @@ public class Constants {
 
     public static final int MAX_NODE_COUNT = 27_000;
     public static final int MINIMUM_ACTIVE_NODE_COUNT = 1000;
+    public static final int NODE_ACTIVATION_STEPS_COUNT = 360;
 
     public static final int SWITCH_MAX_CONNECTION_COUNT = 32;
     public static final int SERVER_MAX_VM_COUNT = 10;
@@ -45,11 +46,12 @@ public class Constants {
 
     public static long CLOCK_IN_SECOND = MAX_LINK_SPEED / GCD_CLASSES_PACKET_SIZE;
 
-    public static final long TOTAL_CLOCK_COUNT = 60L * CLOCK_IN_SECOND;
-    public static final long MAIN_CLOCK_IN_SECOND = TOTAL_CLOCK_COUNT / 60L * 60L * 24L;
+    public static final long SIMULATION_SCALE = 60L;
+    public static final long NETWORK_STATE_SAVED_DATA_COUNT = 24L * 60L;
+    public static final long TOTAL_CLOCK_COUNT = SIMULATION_SCALE * CLOCK_IN_SECOND;
+    public static final long CHECK_NODE_ACTIVATION_CLOCK = TOTAL_CLOCK_COUNT / NODE_ACTIVATION_STEPS_COUNT;
+    public static final long SAVE_NETWORK_STATE_CLOCK_COUNT = TOTAL_CLOCK_COUNT / NETWORK_STATE_SAVED_DATA_COUNT;
     public static final int LINK_SPEED_PER_CLOCK = GCD_CLASSES_PACKET_SIZE;
-//    public static final long ONE_HOUR_CLOCK_COUNT = 60L * 60L * CLOCK_IN_SECOND;
-//    public static final long FIVE_MINUTE_CLOCK_COUNT = 5L * 60L * CLOCK_IN_SECOND;
 
     // classes packets generation speed in clock
     public static final int CLASS_ONE_CYCLE = (int) (CLOCK_IN_SECOND / CLASS_ONE_COUNT);
@@ -60,7 +62,8 @@ public class Constants {
     public static final String TEST_DIR = "src/main/resources/tests/";
     public static final String FIGURE_DIR = "src/main/resources/charts/";
     public static final String GRAPH_DIR = "src/main/resources/graphs/";
-    public static final String ROOT_DIR = "/home/ippbx/IdeaProjects/LargeScaleNetworkSimiulation/";
+    //    public static final String ROOT_DIR = "/home/ippbx/IdeaProjects/LargeScaleNetworkSimiulation/";
+    public static final String ROOT_DIR = "/home/alireza/projects/java/largeScaleNetworkSimulation/";
 
 
     // Recursive function to return gcd of a and b

@@ -170,20 +170,22 @@ public class Network {
                 server.run(clock);
             }
 
-            if (clock % MAIN_CLOCK_IN_SECOND == 0) {
-                System.out.println("simulated second = " + clock / MAIN_CLOCK_IN_SECOND);
-                System.out.println("simulation time in millisecond = " + (System.currentTimeMillis() - start));
+            if (clock % CHECK_NODE_ACTIVATION_CLOCK == 0) {
                 activationPointer = updateNodesActivationState(controller, activationPointer, clock);
             }
 
-            if (clock % MAIN_CLOCK_IN_SECOND == 0) {
+            if (clock % CLOCK_IN_SECOND == 0) {
+                System.out.println("simulated second = " + clock / CLOCK_IN_SECOND);
+                System.out.println("simulation time in millisecond = " + (System.currentTimeMillis() - start));
+            }
+
+            if (clock % SAVE_NETWORK_STATE_CLOCK_COUNT == 0) {
                 controller.updatePath(this);
                 visualization.getData(this);
             }
         }
 
-        visualization.plot();
-        System.out.println("hour = " + hour);
+        visualization.saveCSV();
         System.gc();
 
         System.out.println("run time = " +

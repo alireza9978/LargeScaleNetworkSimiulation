@@ -5,12 +5,18 @@ import Models.Server;
 import Models.StatsModels.EndToEndDelay;
 import Models.Switch;
 import Models.VirtualMachine;
+import constants.Constants;
 import constants.NodeType;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 import org.knowm.xchart.BitmapEncoder;
 import org.knowm.xchart.QuickChart;
 import org.knowm.xchart.XYChart;
 
 import java.io.IOException;
+import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.stream.IntStream;
 
@@ -151,6 +157,88 @@ public class Visualization {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void saveCSV() {
+        String path = Constants.ROOT_DIR + "src/main/resources/results.csv";
+        ArrayList<String> headers = new ArrayList<>();
+        headers.add("Time");
+        headers.add("ActiveNodeCount");
+
+        ArrayList<Float> delay = new ArrayList<>();
+        headers.add("End-to-End Delay");
+        for (EndToEndDelay endToEndDelay : endToEndDelays
+        ) {
+            delay.add(endToEndDelay.getAverage());
+        }
+
+        ArrayList<ArrayList<Float>> delayTyped = new ArrayList<>();
+        for (int i = 0; i < NodeType.getCount(); i++) {
+            headers.add("End-to-End Delay " + NodeType.getInstance(i));
+            ArrayList<Float> tempDelay = new ArrayList<>();
+            for (EndToEndDelay endToEndDelay : endToEndDelays
+            ) {
+                tempDelay.add(endToEndDelay.getAverage(i));
+            }
+            delayTyped.add(tempDelay);
+        }
+
+        ArrayList<Long> droppedPackets = new ArrayList<>();
+        headers.add("dropped packets");
+        for (int i = 0; i < switchesDroppedPackets[0].size(); i++) {
+            long temp = 0;
+            for (int j = 0; j < switchCount; j++) {
+                for (int k = 0; k < NodeType.getCount(); k++) {
+                    temp += switchesDroppedPackets[j].get(i)[k];
+                }
+            }
+            droppedPackets.add(temp);
+        }
+
+        ArrayList<Float> queueSizePackets = new ArrayList<>();
+        headers.add("queue size packets");
+        for (int i = 0; i < switchesQueuePackets[0].size(); i++) {
+            float temp = 0;
+            for (int j = 0; j < switchCount; j++) {
+                temp += switchesQueuePackets[j].get(i);
+            }
+            queueSizePackets.add(temp / switchCount);
+        }
+
+        ArrayList<Float> totalServerUtilization = new ArrayList<>();
+        headers.add("total server utilization");
+        for (int i = 0; i < serverUtilization[0].size(); i++) {
+            float temp = 0;
+            for (int j = 0; j < serverCount; j++) {
+                temp += serverUtilization[j].get(i);
+            }
+            totalServerUtilization.add(temp / serverCount);
+        }
+
+        ArrayList<Long> totalPackets = new ArrayList<>();
+        headers.add("total packets");
+        for (int i = 0; i < serverInputPackets[0].size(); i++) {
+            long temp = 0;
+            for (int j = 0; j < serverCount; j++) {
+                temp += serverInputPackets[j].get(i);
+            }
+            totalPackets.add(temp);
+        }
+
+        try (
+                Writer writer = Files.newBufferedWriter(Paths.get(path));
+                CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(headers.toArray(new String[0])))
+        ) {
+            for (int i = 0; i < xAxis.size(); i++) {
+                csvPrinter.printRecord(xAxis.get(i), activeNodeCount.get(i), delay.get(i), delayTyped.get(0).get(i),
+                        delayTyped.get(1).get(i), delayTyped.get(2).get(i), delayTyped.get(3).get(i),
+                        droppedPackets.get(i), queueSizePackets.get(i), totalServerUtilization.get(i),
+                        totalPackets.get(i));
+            }
+            csvPrinter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
