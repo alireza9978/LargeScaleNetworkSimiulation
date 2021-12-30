@@ -38,8 +38,10 @@ public class Constants {
 
     public static long CLOCK_IN_SECOND = MAX_LINK_SPEED / GCD_CLASSES_PACKET_SIZE;
 
-    public static final long SIMULATION_SCALE = 60L;
-    public static final long NETWORK_STATE_SAVED_DATA_COUNT = 24L * 60L;
+    public static final long SIMULATION_SCALE = 12L * 60L;
+    public static final long NETWORK_STATE_SAVED_DATA_COUNT = 24L * 60L * 60L;
+    public static final long TIME_RATIO = NETWORK_STATE_SAVED_DATA_COUNT / SIMULATION_SCALE;
+
     public static final long TOTAL_CLOCK_COUNT = SIMULATION_SCALE * CLOCK_IN_SECOND;
     public static final long CHECK_NODE_ACTIVATION_CLOCK = TOTAL_CLOCK_COUNT / NODE_ACTIVATION_STEPS_COUNT;
     public static final long SAVE_NETWORK_STATE_CLOCK_COUNT = TOTAL_CLOCK_COUNT / NETWORK_STATE_SAVED_DATA_COUNT;
@@ -74,10 +76,11 @@ public class Constants {
     }
 
     // packets that each server can process in a second
-    public static final int SERVER_MAX_PROCESSING_PACKET_IN_SECOND = calculateMaxPacket();
+    public static final long SERVER_MAX_PROCESSING_PACKET_IN_SECOND = calculateMaxPacket();
+    public static final long SERVER_MAX_PROCESSING_PACKET_IN_CYCLE = SERVER_MAX_PROCESSING_PACKET_IN_SECOND / TIME_RATIO;
 
     // packets that each vm can process in a second
-    public static final int MAX_VM_PACKET_COUNT_PROCESS_SPEED = SERVER_MAX_PROCESSING_PACKET_IN_SECOND / 4;
+    public static final long MAX_VM_PACKET_COUNT_PROCESS_SPEED = SERVER_MAX_PROCESSING_PACKET_IN_CYCLE / 4;
     public static final int MAX_BUFFER_PACKET_COUNT = 100;
 
     // Recursive function to return gcd of a and b

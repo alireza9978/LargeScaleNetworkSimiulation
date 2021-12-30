@@ -63,7 +63,7 @@ public class Server implements Receiver {
     }
 
     public Float getUtilization() {
-        return (float) (cycleProcessedPackets) / (float) Constants.SERVER_MAX_PROCESSING_PACKET_IN_SECOND;
+        return (float) (cycleProcessedPackets) / (float) Constants.SERVER_MAX_PROCESSING_PACKET_IN_CYCLE;
     }
 
     public void resetDataCycle(){
