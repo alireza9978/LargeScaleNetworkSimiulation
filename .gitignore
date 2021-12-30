@@ -6,3 +6,5 @@
 /src/main/resources/tests/*
 /src/main/*.zip
 /src/main/resources/results.csv
+/out/
+/target/
