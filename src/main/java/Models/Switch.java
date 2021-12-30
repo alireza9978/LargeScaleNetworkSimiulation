@@ -107,25 +107,25 @@ public class Switch implements Receiver, Runnable {
     }
 
     public int getInputPacketsCount() {
-        int temp = inputPacketsCount;
-        inputPacketsCount = 0;
-        return temp;
+        return inputPacketsCount;
     }
 
     public Float getQueuePacketsCount() {
-        float temp = (float) sumPacketCountInQueue / (float) clockForAverage;
-        sumPacketCountInQueue = 0;
-        clockForAverage = 0;
-        return temp;
+        return (float) sumPacketCountInQueue / (float) clockForAverage;
     }
 
     public Integer[] getDroppedPacketsCount() {
-        Integer[] temp = droppedPacket;
+        return droppedPacket;
+    }
+
+    public void resetDataCycle(){
+        inputPacketsCount = 0;
+        sumPacketCountInQueue = 0;
+        clockForAverage = 0;
         droppedPacket = new Integer[NodeType.getCount()];
         for (int i = 0; i < NodeType.getCount(); i++) {
             droppedPacket[i] = 0;
         }
-        return temp;
     }
 
     public int getId() {

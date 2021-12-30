@@ -124,7 +124,6 @@ public class Network {
         }
     }
 
-
     private int updateNodesActivationState(Controller controller, int activationPointer, long clock) {
         if (activationPointer < nodeActivations.length)
             if (nodeActivations[activationPointer].getTime() == clock) {
@@ -192,8 +191,6 @@ public class Network {
                 TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis() - start) + " seconds");
         System.out.println("run time = " + (System.currentTimeMillis() - start) + " milli second");
 
-        Arrays.stream(servers).map(Server::toString).forEachOrdered(System.out::println);
-
     }
 
     public Node getNode(int id) {
@@ -236,5 +233,10 @@ public class Network {
 
     public int getNodeCount() {
         return nodeCount;
+    }
+
+    public void resetDataCycle() {
+        Arrays.stream(switches).forEach(Switch::resetDataCycle);
+        Arrays.stream(servers).forEach(Server::resetDataCycle);
     }
 }

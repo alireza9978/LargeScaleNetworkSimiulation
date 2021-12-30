@@ -13,14 +13,6 @@ public class Constants {
     public static final int SWITCH_MAX_CONNECTION_COUNT = 32;
     public static final int SERVER_MAX_VM_COUNT = 10;
 
-    // packets that each server can process in a second
-    public static final int SERVER_MAX_PROCESSING_PACKET_IN_SECOND = 16000;
-
-    // packets that each vm can process in a second
-    public static final int MAX_VM_PACKET_COUNT_PROCESS_SPEED = 4000;
-
-    public static final int MAX_BUFFER_PACKET_COUNT = 100;
-
     // classes packets size in b
     public static final int CLASS_ONE_SIZE = 2000;
     public static final int CLASS_TWO_SIZE = 2000;
@@ -59,12 +51,34 @@ public class Constants {
     public static final int CLASS_THREE_CYCLE = (int) (CLOCK_IN_SECOND / CLASS_THREE_COUNT);
     public static final int CLASS_FOUR_CYCLE = (int) (CLOCK_IN_SECOND / CLASS_FOUR_COUNT);
 
+    // probability of belonging to a class
+    public static final float CLASS_ONE_PROBABILITY = 0.1f;
+    public static final float CLASS_TWO_PROBABILITY = 0.2f;
+    public static final float CLASS_THREE_PROBABILITY = 0.3f;
+    public static final float CLASS_FOUR_PROBABILITY = 0.4f;
+
     public static final String TEST_DIR = "src/main/resources/tests/";
     public static final String FIGURE_DIR = "src/main/resources/charts/";
     public static final String GRAPH_DIR = "src/main/resources/graphs/";
     //    public static final String ROOT_DIR = "/home/ippbx/IdeaProjects/LargeScaleNetworkSimiulation/";
     public static final String ROOT_DIR = "/home/alireza/projects/java/largeScaleNetworkSimulation/";
 
+    public static int calculateMaxPacket() {
+        double packetCountInSecond = (CLASS_ONE_COUNT * CLASS_ONE_PROBABILITY * MAX_NODE_COUNT) +
+                (CLASS_TWO_COUNT * CLASS_TWO_PROBABILITY * MAX_NODE_COUNT) +
+                (CLASS_THREE_COUNT * CLASS_THREE_PROBABILITY * MAX_NODE_COUNT) +
+                (CLASS_FOUR_COUNT * CLASS_FOUR_PROBABILITY * MAX_NODE_COUNT);
+        float averagePacketSize = 2000;
+        int connectionConstraint = (int) (SERVER_LINK_SPEED / averagePacketSize);
+        return Math.min((int) packetCountInSecond / 3, connectionConstraint);
+    }
+
+    // packets that each server can process in a second
+    public static final int SERVER_MAX_PROCESSING_PACKET_IN_SECOND = calculateMaxPacket();
+
+    // packets that each vm can process in a second
+    public static final int MAX_VM_PACKET_COUNT_PROCESS_SPEED = SERVER_MAX_PROCESSING_PACKET_IN_SECOND / 4;
+    public static final int MAX_BUFFER_PACKET_COUNT = 100;
 
     // Recursive function to return gcd of a and b
     static int gcd(int a, int b) {

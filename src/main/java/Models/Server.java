@@ -63,10 +63,18 @@ public class Server implements Receiver {
     }
 
     public Float getUtilization() {
-        float temp = (float) (cycleProcessedPackets) / (float) Constants.SERVER_MAX_PROCESSING_PACKET_IN_SECOND;
-        cycleProcessedPackets = 0;
-        return temp;
+        return (float) (cycleProcessedPackets) / (float) Constants.SERVER_MAX_PROCESSING_PACKET_IN_SECOND;
     }
+
+    public void resetDataCycle(){
+        cycleProcessedPackets = 0;
+        for (VirtualMachine virtualMachine : virtualMachines) {
+            if (virtualMachine != null) {
+                virtualMachine.resetDataCycle();
+            }
+        }
+    }
+
     public VirtualMachine[] getVirtualMachines() {
         return virtualMachines;
     }

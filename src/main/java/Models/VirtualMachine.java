@@ -64,15 +64,16 @@ public class VirtualMachine implements Receiver {
     }
 
     public Float getUtilization() {
-        float temp = (float) (cycleProcessedPackets) / (float) Constants.MAX_VM_PACKET_COUNT_PROCESS_SPEED;
-        cycleProcessedPackets = 0;
-        return temp;
+        return (float) (cycleProcessedPackets) / (float) Constants.MAX_VM_PACKET_COUNT_PROCESS_SPEED;
     }
 
     public EndToEndDelay getEndToEndDelay() {
-        EndToEndDelay temp = this.endToEndDelay;
+        return this.endToEndDelay;
+    }
+
+    public void resetDataCycle() {
+        cycleProcessedPackets = 0;
         this.endToEndDelay = new EndToEndDelay();
-        return temp;
     }
 
 }

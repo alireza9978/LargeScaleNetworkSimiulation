@@ -83,6 +83,7 @@ public class Visualization {
         }
         endToEndDelays.add(endToEndDelay);
         activeNodeCount.add(network.getActiveNodeCount());
+        network.resetDataCycle();
     }
 
     synchronized void plotSwitch(int i) {
@@ -161,84 +162,154 @@ public class Visualization {
     }
 
     public void saveCSV() {
-        String path = Constants.ROOT_DIR + "src/main/resources/results.csv";
-        ArrayList<String> headers = new ArrayList<>();
-        headers.add("Time");
-        headers.add("ActiveNodeCount");
+        {
+            String path = Constants.ROOT_DIR + "src/main/resources/results/network.csv";
+            ArrayList<String> headers = new ArrayList<>();
+            headers.add("Time");
+            headers.add("ActiveNodeCount");
 
-        ArrayList<Float> delay = new ArrayList<>();
-        headers.add("End-to-End Delay");
-        for (EndToEndDelay endToEndDelay : endToEndDelays
-        ) {
-            delay.add(endToEndDelay.getAverage());
-        }
-
-        ArrayList<ArrayList<Float>> delayTyped = new ArrayList<>();
-        for (int i = 0; i < NodeType.getCount(); i++) {
-            headers.add("End-to-End Delay " + NodeType.getInstance(i));
-            ArrayList<Float> tempDelay = new ArrayList<>();
+            ArrayList<Float> delay = new ArrayList<>();
+            headers.add("End-to-End Delay");
             for (EndToEndDelay endToEndDelay : endToEndDelays
             ) {
-                tempDelay.add(endToEndDelay.getAverage(i));
+                delay.add(endToEndDelay.getAverage());
             }
-            delayTyped.add(tempDelay);
-        }
 
-        ArrayList<Long> droppedPackets = new ArrayList<>();
-        headers.add("dropped packets");
-        for (int i = 0; i < switchesDroppedPackets[0].size(); i++) {
-            long temp = 0;
-            for (int j = 0; j < switchCount; j++) {
-                for (int k = 0; k < NodeType.getCount(); k++) {
-                    temp += switchesDroppedPackets[j].get(i)[k];
+            ArrayList<ArrayList<Float>> delayTyped = new ArrayList<>();
+            for (int i = 0; i < NodeType.getCount(); i++) {
+                headers.add("End-to-End Delay " + NodeType.getInstance(i));
+                ArrayList<Float> tempDelay = new ArrayList<>();
+                for (EndToEndDelay endToEndDelay : endToEndDelays
+                ) {
+                    tempDelay.add(endToEndDelay.getAverage(i));
+                }
+                delayTyped.add(tempDelay);
+            }
+
+            ArrayList<Long> droppedPackets = new ArrayList<>();
+            headers.add("dropped packets");
+            for (int i = 0; i < switchesDroppedPackets[0].size(); i++) {
+                long temp = 0;
+                for (int j = 0; j < switchCount; j++) {
+                    for (int k = 0; k < NodeType.getCount(); k++) {
+                        temp += switchesDroppedPackets[j].get(i)[k];
+                    }
+                }
+                droppedPackets.add(temp);
+            }
+
+            ArrayList<Float> queueSizePackets = new ArrayList<>();
+            headers.add("queue size packets");
+            for (int i = 0; i < switchesQueuePackets[0].size(); i++) {
+                float temp = 0;
+                for (int j = 0; j < switchCount; j++) {
+                    temp += switchesQueuePackets[j].get(i);
+                }
+                queueSizePackets.add(temp / switchCount);
+            }
+
+            ArrayList<Float> totalServerUtilization = new ArrayList<>();
+            headers.add("total server utilization");
+            for (int i = 0; i < serverUtilization[0].size(); i++) {
+                float temp = 0;
+                for (int j = 0; j < serverCount; j++) {
+                    temp += serverUtilization[j].get(i);
+                }
+                totalServerUtilization.add(temp / serverCount);
+            }
+
+            ArrayList<Long> totalPackets = new ArrayList<>();
+            headers.add("total packets");
+            for (int i = 0; i < serverInputPackets[0].size(); i++) {
+                long temp = 0;
+                for (int j = 0; j < serverCount; j++) {
+                    temp += serverInputPackets[j].get(i);
+                }
+                totalPackets.add(temp);
+            }
+
+            try (
+                    Writer writer = Files.newBufferedWriter(Paths.get(path));
+                    CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(headers.toArray(new String[0])))
+            ) {
+                for (int i = 0; i < xAxis.size(); i++) {
+                    csvPrinter.printRecord(xAxis.get(i), activeNodeCount.get(i), delay.get(i), delayTyped.get(0).get(i),
+                            delayTyped.get(1).get(i), delayTyped.get(2).get(i), delayTyped.get(3).get(i),
+                            droppedPackets.get(i), queueSizePackets.get(i), totalServerUtilization.get(i),
+                            totalPackets.get(i));
+                }
+                csvPrinter.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        {
+            String path = Constants.ROOT_DIR + "src/main/resources/results/switches.csv";
+            ArrayList<String> headers = new ArrayList<>();
+            headers.add("Time");
+            for (int i = 0; i < switchCount; i++) {
+                headers.add("switch_" + i + "_input_packets");
+                headers.add("switch_" + i + "_queue_packets");
+                headers.add("switch_" + i + "_dropped_packets");
+            }
+
+            try (
+                    Writer writer = Files.newBufferedWriter(Paths.get(path));
+                    CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(headers.toArray(new String[0])))
+            ) {
+                for (int i = 0; i < xAxis.size(); i++) {
+                    ArrayList<Object> objects = new ArrayList<>();
+                    objects.add(xAxis.get(i));
+                    for (int j = 0; j < switchCount; j++) {
+                        objects.add(switchesInputPackets[j].get(i));
+                        objects.add(switchesQueuePackets[j].get(i));
+                        objects.add(switchesDroppedPackets[j].get(i));
+                    }
+                    csvPrinter.printRecord(objects.toArray(new Object[0]));
+                }
+                csvPrinter.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        {
+            String path = Constants.ROOT_DIR + "src/main/resources/results/servers.csv";
+            ArrayList<String> headers = new ArrayList<>();
+            headers.add("Time");
+            for (int i = 0; i < serverCount; i++) {
+                headers.add("servers_" + i + "_input_packets");
+                headers.add("servers_" + i + "_utilization");
+                for (int j = 0; j < vmUtilization[i].length; j++) {
+                    if (vmUtilization[i][j] != null) {
+                        headers.add("servers_" + i + "_vm_" + j);
+                    }
                 }
             }
-            droppedPackets.add(temp);
-        }
 
-        ArrayList<Float> queueSizePackets = new ArrayList<>();
-        headers.add("queue size packets");
-        for (int i = 0; i < switchesQueuePackets[0].size(); i++) {
-            float temp = 0;
-            for (int j = 0; j < switchCount; j++) {
-                temp += switchesQueuePackets[j].get(i);
+            try (
+                    Writer writer = Files.newBufferedWriter(Paths.get(path));
+                    CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(headers.toArray(new String[0])))
+            ) {
+                for (int i = 0; i < xAxis.size(); i++) {
+                    ArrayList<Object> objects = new ArrayList<>();
+                    objects.add(xAxis.get(i));
+                    for (int j = 0; j < serverCount; j++) {
+                        objects.add(serverInputPackets[j].get(i));
+                        objects.add(serverUtilization[j].get(i));
+                        for (int k = 0; k < vmUtilization[j].length; k++) {
+                            if (vmUtilization[j][k] != null) {
+                                if (vmUtilization[j][k].size() > i) {
+                                    objects.add(vmUtilization[j][k].get(i));
+                                }
+                            }
+                        }
+                    }
+                    csvPrinter.printRecord(objects.toArray(new Object[0]));
+                }
+                csvPrinter.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            queueSizePackets.add(temp / switchCount);
-        }
-
-        ArrayList<Float> totalServerUtilization = new ArrayList<>();
-        headers.add("total server utilization");
-        for (int i = 0; i < serverUtilization[0].size(); i++) {
-            float temp = 0;
-            for (int j = 0; j < serverCount; j++) {
-                temp += serverUtilization[j].get(i);
-            }
-            totalServerUtilization.add(temp / serverCount);
-        }
-
-        ArrayList<Long> totalPackets = new ArrayList<>();
-        headers.add("total packets");
-        for (int i = 0; i < serverInputPackets[0].size(); i++) {
-            long temp = 0;
-            for (int j = 0; j < serverCount; j++) {
-                temp += serverInputPackets[j].get(i);
-            }
-            totalPackets.add(temp);
-        }
-
-        try (
-                Writer writer = Files.newBufferedWriter(Paths.get(path));
-                CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader(headers.toArray(new String[0])))
-        ) {
-            for (int i = 0; i < xAxis.size(); i++) {
-                csvPrinter.printRecord(xAxis.get(i), activeNodeCount.get(i), delay.get(i), delayTyped.get(0).get(i),
-                        delayTyped.get(1).get(i), delayTyped.get(2).get(i), delayTyped.get(3).get(i),
-                        droppedPackets.get(i), queueSizePackets.get(i), totalServerUtilization.get(i),
-                        totalPackets.get(i));
-            }
-            csvPrinter.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
