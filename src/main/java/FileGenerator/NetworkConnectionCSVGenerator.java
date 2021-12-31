@@ -20,7 +20,7 @@ public class NetworkConnectionCSVGenerator {
     }
 
     public void create() {
-        String switchesPath = Constants.ROOT_DIR + "src/main/java/NetworkStructureFiles/switches_generated.csv";
+        String switchesPath = "src/main/java/NetworkStructureFiles/switches_generated.csv";
         String serversPath = Constants.ROOT_DIR + "src/main/java/NetworkStructureFiles/servers_generated.csv";
         String edgeSwitchesPath = Constants.ROOT_DIR + "src/main/java/NetworkStructureFiles/edge_switches_generated.csv";
         String vmPath = Constants.ROOT_DIR + "src/main/java/NetworkStructureFiles/vm_generated.csv";
