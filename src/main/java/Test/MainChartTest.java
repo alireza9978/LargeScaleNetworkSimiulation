@@ -1,3 +1,5 @@
+package Test;
+
 import constants.Constants;
 import constants.Gaussian;
 import org.knowm.xchart.BitmapEncoder;
