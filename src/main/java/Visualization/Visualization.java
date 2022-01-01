@@ -64,7 +64,7 @@ public class Visualization {
         for (int i = 0; i < switchCount; i++) {
             Switch networkSwitch = network.getSwitch(i);
             switchesInputPackets[i].add(networkSwitch.getInputPacketsCount());
-            switchesQueuePackets[i].add(networkSwitch.getQueuePacketsCount());
+            switchesQueuePackets[i].add(networkSwitch.getQueueSize());
             switchesDroppedPackets[i].add(networkSwitch.getDroppedPacketsCount());
         }
         EndToEndDelay endToEndDelay = new EndToEndDelay();
@@ -163,7 +163,7 @@ public class Visualization {
 
     public void saveCSV() {
         {
-            String path = Constants.ROOT_DIR + "src/main/resources/results/network.csv";
+            String path = "src/main/resources/results/network.csv";
             ArrayList<String> headers = new ArrayList<>();
             headers.add("Time");
             headers.add("ActiveNodeCount");
@@ -244,13 +244,26 @@ public class Visualization {
             }
         }
         {
-            String path = Constants.ROOT_DIR + "src/main/resources/results/switches.csv";
+            String path = "src/main/resources/results/switches.csv";
             ArrayList<String> headers = new ArrayList<>();
             headers.add("Time");
             for (int i = 0; i < switchCount; i++) {
                 headers.add("switch_" + i + "_input_packets");
                 headers.add("switch_" + i + "_queue_packets");
                 headers.add("switch_" + i + "_dropped_packets");
+            }
+
+            long[][] dropped = new long[switchCount][switchesInputPackets[0].size()];
+            for (int i = 0; i < switchCount; i++) {
+                ArrayList<Integer[]> switchesDroppedPacket = switchesDroppedPackets[i];
+                for (int j = 0; j < switchesDroppedPacket.size(); j++) {
+                    Integer[] tempArray = switchesDroppedPacket.get(j);
+                    long droppedCount = 0;
+                    for (Integer integer : tempArray) {
+                        droppedCount += integer;
+                    }
+                    dropped[i][j] = droppedCount;
+                }
             }
 
             try (
@@ -263,7 +276,7 @@ public class Visualization {
                     for (int j = 0; j < switchCount; j++) {
                         objects.add(switchesInputPackets[j].get(i));
                         objects.add(switchesQueuePackets[j].get(i));
-                        objects.add(switchesDroppedPackets[j].get(i));
+                        objects.add(dropped[j][i]);
                     }
                     csvPrinter.printRecord(objects.toArray(new Object[0]));
                 }
@@ -273,7 +286,7 @@ public class Visualization {
             }
         }
         {
-            String path = Constants.ROOT_DIR + "src/main/resources/results/servers.csv";
+            String path = "src/main/resources/results/servers.csv";
             ArrayList<String> headers = new ArrayList<>();
             headers.add("Time");
             for (int i = 0; i < serverCount; i++) {

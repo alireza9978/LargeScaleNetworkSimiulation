@@ -7,9 +7,8 @@ import constants.Pair;
 import constants.PairTriple;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
 
-public class ShortestPathController extends Controller {
+public class ShortestPathController_hop extends Controller {
 
 
     @Override

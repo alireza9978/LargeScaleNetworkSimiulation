@@ -194,13 +194,13 @@ public class Network {
     }
 
     public Node getNode(int id) {
-        if (id < nodes.length)
+        if (id < nodeCount)
             return nodes[id];
         return null;
     }
 
     public Switch getSwitch(int id) {
-        if (id < switches.length)
+        if (id < switchCount)
             return switches[id];
         return null;
     }
@@ -238,5 +238,13 @@ public class Network {
     public void resetDataCycle() {
         Arrays.stream(switches).forEach(Switch::resetDataCycle);
         Arrays.stream(servers).forEach(Server::resetDataCycle);
+    }
+
+    public ArrayList<Node> getDeactivateNodes() {
+        return deactivateNodes;
+    }
+
+    public ArrayList<Node> getActivateNodes() {
+        return activateNodes;
     }
 }

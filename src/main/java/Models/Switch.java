@@ -16,6 +16,7 @@ public class Switch implements Receiver, Runnable {
     private ArrayList<Packet> inputPackets = new ArrayList<>();
     private int inputPacketsCount = 0;
     private int sumPacketCountInQueue = 0;
+    private int[] sumPacketCountInQueues;
     private int clockForAverage = 0;
     private final ArrayList<Pair<Integer, Integer>> switchesConnections = new ArrayList<>();
     private final ArrayList<Pair<Integer, Integer>> serversConnections = new ArrayList<>();
@@ -25,9 +26,13 @@ public class Switch implements Receiver, Runnable {
         this.id = ID;
         ID++;
         buffers = new Buffer[Constants.SWITCH_MAX_CONNECTION_COUNT];
+        sumPacketCountInQueues  = new int[buffers.length];
         droppedPacket = new Integer[NodeType.getCount()];
         for (int i = 0; i < NodeType.getCount(); i++) {
             droppedPacket[i] = 0;
+        }
+        for (int i = 0; i < buffers.length; i++) {
+            sumPacketCountInQueues[i] = 0;
         }
     }
 
@@ -97,9 +102,11 @@ public class Switch implements Receiver, Runnable {
 
     @Override
     public void run() {
-        for (Buffer buffer : buffers) {
+        for (int i = 0; i < buffers.length; i++) {
+            Buffer buffer = buffers[i];
             if (buffer != null) {
                 buffer.simulate();
+                sumPacketCountInQueues[i] += buffer.packetInQueue();
                 sumPacketCountInQueue += buffer.packetInQueue();
             }
         }
@@ -110,8 +117,18 @@ public class Switch implements Receiver, Runnable {
         return inputPacketsCount;
     }
 
-    public Float getQueuePacketsCount() {
+    public Float getQueueSize() {
+        if (clockForAverage == 0){
+            return 0.1f;
+        }
         return (float) sumPacketCountInQueue / (float) clockForAverage;
+    }
+
+    public Float getQueueSize(int port) {
+        if (clockForAverage == 0){
+            return 0.1f;
+        }
+        return (float) sumPacketCountInQueues[port] / (float) clockForAverage;
     }
 
     public Integer[] getDroppedPacketsCount() {
@@ -121,10 +138,14 @@ public class Switch implements Receiver, Runnable {
     public void resetDataCycle(){
         inputPacketsCount = 0;
         sumPacketCountInQueue = 0;
+        sumPacketCountInQueues = new int[buffers.length];
         clockForAverage = 0;
         droppedPacket = new Integer[NodeType.getCount()];
         for (int i = 0; i < NodeType.getCount(); i++) {
             droppedPacket[i] = 0;
+        }
+        for (int i = 0; i < buffers.length; i++) {
+            sumPacketCountInQueues[i] = 0;
         }
     }
 
@@ -139,4 +160,5 @@ public class Switch implements Receiver, Runnable {
     public ArrayList<Pair<Integer, Integer>> getServersConnections() {
         return serversConnections;
     }
+
 }

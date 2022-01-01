@@ -1,11 +1,8 @@
-import FileGenerator.NodeStateCSVGenerator;
 import FileGenerator.NetworkConnectionCSVGenerator;
 import FileGenerator.NodeStateCSVGeneratorGaussian;
 import Models.Network;
-import Models.controllers.ShortestPathController;
-import Models.controllers.SimpleFileBasedController;
+import Models.controllers.ShortestPathController_queue;
 import Models.controllers.SimpleShortestPathController;
-import constants.Constants;
 
 public class Main {
 
@@ -19,7 +16,8 @@ public class Main {
         System.out.println("starting the simulation");
         Network test = new Network();
 //        test.simulate(new SimpleFileBasedController());
-        test.simulate(new SimpleShortestPathController());
+//        test.simulate(new SimpleShortestPathController());
+        test.simulate(new ShortestPathController_queue());
 
     }
 
