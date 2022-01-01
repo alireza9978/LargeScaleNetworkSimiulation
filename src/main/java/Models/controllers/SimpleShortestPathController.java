@@ -77,4 +77,10 @@ public class SimpleShortestPathController extends Controller {
         }
     }
 
+
+    @Override
+    public String getName() {
+        return "shortest_path_hop";
+    }
+
 }

@@ -41,7 +41,7 @@ public class Network {
         serverCount = connectServers(serverConnections);
         singleServerVmCount = startVirtualMachines(vmConnections);
         nodeActivations = NetworkStructureUtil.getActiveNodesStructure().toArray(new NodeActivation[0]);
-        GraphMaker.create(switchConnections, nodeConnections, serverConnections, vmConnections);
+//        GraphMaker.create(switchConnections, nodeConnections, serverConnections, vmConnections);
     }
 
     private int[] startVirtualMachines(ArrayList<VirtualMachineConnection> virtualMachineConnections) {
@@ -178,13 +178,15 @@ public class Network {
                 System.out.println("simulation time in millisecond = " + (System.currentTimeMillis() - start));
             }
 
-            if (clock % SAVE_NETWORK_STATE_CLOCK_COUNT == 0) {
+            if (clock % UPDATE_NETWORK_PATH_CLOCK_COUNT == 0) {
                 controller.updatePath(this);
+            }
+            if (clock % SAVE_NETWORK_STATE_CLOCK_COUNT == 0) {
                 visualization.getData(this);
             }
         }
 
-        visualization.saveCSV();
+        visualization.saveCSV(controller.getName());
         System.gc();
 
         System.out.println("run time = " +

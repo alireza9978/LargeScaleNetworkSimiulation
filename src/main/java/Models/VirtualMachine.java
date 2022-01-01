@@ -24,7 +24,6 @@ public class VirtualMachine implements Receiver {
     @Override
     public void receive(Packet packet) {
         if (cycleProcessedPackets >= Constants.MAX_VM_PACKET_COUNT_PROCESS_SPEED) {
-            System.out.println("VM id=" + id + " has crashed");
             return;
         }
         if (packet.getSender().getType().equals(type)) {

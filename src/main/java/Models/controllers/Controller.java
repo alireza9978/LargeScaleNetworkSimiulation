@@ -13,5 +13,5 @@ public abstract class Controller {
     public abstract void initialize(Network network);
     public abstract void updatePath(Network network);
     public abstract void updatePath(Network network, ArrayList<Node> activatedNode, ArrayList<Node> deactivatedNode);
-
+    public abstract String getName();
 }

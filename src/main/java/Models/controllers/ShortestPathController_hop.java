@@ -73,4 +73,9 @@ public class ShortestPathController_hop extends Controller {
         }
     }
 
+    @Override
+    public String getName() {
+        return "nearest_server_hop";
+    }
+
 }

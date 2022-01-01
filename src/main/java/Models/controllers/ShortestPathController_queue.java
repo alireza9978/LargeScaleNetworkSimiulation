@@ -31,6 +31,10 @@ public class ShortestPathController_queue extends Controller {
         ArrayList<Node> activeNodes = network.getActivateNodes();
         ArrayList<Integer> path;
 
+        for (int i = 0; i < network.getSwitchCount(); i++) {
+            network.getSwitch(i).updateRoutingSetting(new Hashtable<>());
+        }
+
         for (Node node : activeNodes) {
             path = NetworkUtil.dijkstra(connectionsCost, node.getConnection().getId(), network.getSwitchCount() + node.getTargetServer());
             for (int i = 0; i < path.size() - 1; i++) {
@@ -57,6 +61,12 @@ public class ShortestPathController_queue extends Controller {
                 network.getSwitch(startSwitch).addRoutingSetting(node.id, port);
             }
         }
+    }
+
+
+    @Override
+    public String getName() {
+        return "shortest_path_queue";
     }
 
 }

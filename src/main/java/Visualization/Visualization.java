@@ -161,9 +161,9 @@ public class Visualization {
         }
     }
 
-    public void saveCSV() {
+    public void saveCSV(String suffix) {
         {
-            String path = "src/main/resources/results/network.csv";
+            String path = "src/main/resources/results/network_" + suffix + ".csv";
             ArrayList<String> headers = new ArrayList<>();
             headers.add("Time");
             headers.add("ActiveNodeCount");
@@ -244,7 +244,7 @@ public class Visualization {
             }
         }
         {
-            String path = "src/main/resources/results/switches.csv";
+            String path = "src/main/resources/results/switches_" + suffix + ".csv";
             ArrayList<String> headers = new ArrayList<>();
             headers.add("Time");
             for (int i = 0; i < switchCount; i++) {
@@ -286,7 +286,7 @@ public class Visualization {
             }
         }
         {
-            String path = "src/main/resources/results/servers.csv";
+            String path = "src/main/resources/results/servers_" + suffix + ".csv";
             ArrayList<String> headers = new ArrayList<>();
             headers.add("Time");
             for (int i = 0; i < serverCount; i++) {

@@ -127,6 +127,8 @@ public class Switch implements Receiver, Runnable {
     public Float getQueueSize(int port) {
         if (clockForAverage == 0){
             return 0.1f;
+        }else if (sumPacketCountInQueues[port] == 0.0f){
+            return 0.000000001f;
         }
         return (float) sumPacketCountInQueues[port] / (float) clockForAverage;
     }

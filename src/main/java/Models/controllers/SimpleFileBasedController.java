@@ -34,4 +34,10 @@ public class SimpleFileBasedController extends Controller {
 
     }
 
+
+    @Override
+    public String getName() {
+        return "file_base";
+    }
+
 }

@@ -40,11 +40,13 @@ public class Constants {
 
     public static final long SIMULATION_SCALE = 12L * 60L;
     public static final long NETWORK_STATE_SAVED_DATA_COUNT = 24L * 60L * 60L;
+    public static final long UPDATE_NETWORK_PATH_DATA_COUNT = 24L * 6L;
     public static final long TIME_RATIO = NETWORK_STATE_SAVED_DATA_COUNT / SIMULATION_SCALE;
 
     public static final long TOTAL_CLOCK_COUNT = SIMULATION_SCALE * CLOCK_IN_SECOND;
     public static final long CHECK_NODE_ACTIVATION_CLOCK = TOTAL_CLOCK_COUNT / NODE_ACTIVATION_STEPS_COUNT;
     public static final long SAVE_NETWORK_STATE_CLOCK_COUNT = TOTAL_CLOCK_COUNT / NETWORK_STATE_SAVED_DATA_COUNT;
+    public static final long UPDATE_NETWORK_PATH_CLOCK_COUNT = TOTAL_CLOCK_COUNT / UPDATE_NETWORK_PATH_DATA_COUNT;
     public static final int LINK_SPEED_PER_CLOCK = GCD_CLASSES_PACKET_SIZE;
 
     // classes packets generation speed in clock
