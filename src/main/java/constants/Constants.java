@@ -64,7 +64,7 @@ public class Constants {
     public static final String GRAPH_DIR = "src/main/resources/graphs/";
     //    public static final String ROOT_DIR = "/home/ippbx/IdeaProjects/LargeScaleNetworkSimiulation/";
 //    public static final String ROOT_DIR = "/home/alireza/projects/java/largeScaleNetworkSimulation/";
-    public static final String ROOT_DIR = "C:\\Users\\Alireza\\IdeaProjects\\LargeScaleNetworkSimulation\\";
+//    public static final String ROOT_DIR = "C:\\Users\\Alireza\\IdeaProjects\\LargeScaleNetworkSimulation\\";
 
     public static int calculateMaxPacket() {
         double packetCountInSecond = (CLASS_ONE_COUNT * CLASS_ONE_PROBABILITY * MAX_NODE_COUNT) +

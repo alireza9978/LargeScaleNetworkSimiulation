@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static constants.Constants.*;
+import static constants.Constants.MAX_NODE_COUNT;
 
 public class NetworkStructureUtil {
 
@@ -32,7 +32,7 @@ public class NetworkStructureUtil {
 
 
     public static ArrayList<NodeActivation> getActiveNodesStructure() {
-        List<CSVRecord> records = readCsv(ROOT_DIR + "src/main/java/NetworkStructureFiles/activeNode.csv");
+        List<CSVRecord> records = readCsv("src/main/java/NetworkStructureFiles/activeNode.csv");
         ArrayList<NodeActivation> nodeActivations = new ArrayList<>();
         assert records != null;
         for (CSVRecord record : records) {
@@ -42,7 +42,7 @@ public class NetworkStructureUtil {
     }
 
     public static ArrayList<SwitchConnection> getSwitchesStructure() {
-        List<CSVRecord> records = readCsv(ROOT_DIR + "src/main/java/NetworkStructureFiles/switches_generated.csv");
+        List<CSVRecord> records = readCsv("src/main/java/NetworkStructureFiles/switches_generated.csv");
         ArrayList<SwitchConnection> switchConnections = new ArrayList<>();
         assert records != null;
         for (CSVRecord record : records) {
@@ -53,7 +53,7 @@ public class NetworkStructureUtil {
     }
 
     public static ArrayList<NodeConnection> getNodeStructure() {
-        List<CSVRecord> records = readCsv(ROOT_DIR + "src/main/java/NetworkStructureFiles/edge_switches_generated.csv");
+        List<CSVRecord> records = readCsv("src/main/java/NetworkStructureFiles/edge_switches_generated.csv");
         assert records != null;
 
         int edgeSwitchCount = records.size();
@@ -81,7 +81,7 @@ public class NetworkStructureUtil {
     }
 
     public static ArrayList<VirtualMachineConnection> getVirtualMachinesStructure() {
-        List<CSVRecord> records = readCsv(ROOT_DIR + "src/main/java/NetworkStructureFiles/vm_generated.csv");
+        List<CSVRecord> records = readCsv("src/main/java/NetworkStructureFiles/vm_generated.csv");
         assert records != null;
         ArrayList<VirtualMachineConnection> virtualMachineConnections = new ArrayList<>();
         for (CSVRecord record : records) {
@@ -93,7 +93,7 @@ public class NetworkStructureUtil {
 
 
     public static ArrayList<ServerConnection> getServerStructure() {
-        List<CSVRecord> records = readCsv(ROOT_DIR + "src/main/java/NetworkStructureFiles/servers_generated.csv");
+        List<CSVRecord> records = readCsv("src/main/java/NetworkStructureFiles/servers_generated.csv");
         assert records != null;
         ArrayList<ServerConnection> serverConnections = new ArrayList<>();
         for (CSVRecord record : records) {
@@ -104,7 +104,7 @@ public class NetworkStructureUtil {
     }
 
     public static ArrayList<NodeFlowNumber> getNodeFlowNumber() {
-        List<CSVRecord> records = readCsv(ROOT_DIR + "src/main/java/NetworkStructureFiles/flowsNode.csv");
+        List<CSVRecord> records = readCsv("src/main/java/NetworkStructureFiles/flowsNode.csv");
         assert records != null;
         ArrayList<NodeFlowNumber> nodeFlowNumbers = new ArrayList<>();
         for (CSVRecord record : records) {
@@ -114,7 +114,7 @@ public class NetworkStructureUtil {
     }
 
     public static ArrayList<SwitchFlowSetting> getSwitchFlowNumber() {
-        List<CSVRecord> records = readCsv(ROOT_DIR + "src/main/java/NetworkStructureFiles/flowsSwitches.csv");
+        List<CSVRecord> records = readCsv("src/main/java/NetworkStructureFiles/flowsSwitches.csv");
         assert records != null;
         ArrayList<SwitchFlowSetting> nodeFlowNumbers = new ArrayList<>();
         for (int i = 0; i < records.size(); i++) {

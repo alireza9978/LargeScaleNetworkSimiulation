@@ -21,9 +21,9 @@ public class NetworkConnectionCSVGenerator {
 
     public void create() {
         String switchesPath = "src/main/java/NetworkStructureFiles/switches_generated.csv";
-        String serversPath = Constants.ROOT_DIR + "src/main/java/NetworkStructureFiles/servers_generated.csv";
-        String edgeSwitchesPath = Constants.ROOT_DIR + "src/main/java/NetworkStructureFiles/edge_switches_generated.csv";
-        String vmPath = Constants.ROOT_DIR + "src/main/java/NetworkStructureFiles/vm_generated.csv";
+        String serversPath = "src/main/java/NetworkStructureFiles/servers_generated.csv";
+        String edgeSwitchesPath = "src/main/java/NetworkStructureFiles/edge_switches_generated.csv";
+        String vmPath = "src/main/java/NetworkStructureFiles/vm_generated.csv";
         try (
                 Writer switchesWriter = Files.newBufferedWriter(Paths.get(switchesPath));
                 Writer serversWriter = Files.newBufferedWriter(Paths.get(serversPath));

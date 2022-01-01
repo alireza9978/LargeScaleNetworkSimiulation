@@ -14,7 +14,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import static constants.Constants.*;
+import static constants.Constants.MINIMUM_ACTIVE_NODE_COUNT;
+import static constants.Constants.NODE_ACTIVATION_STEPS_COUNT;
 
 public class NodeStateCSVGeneratorGaussian {
 
@@ -23,7 +24,7 @@ public class NodeStateCSVGeneratorGaussian {
     private final ArrayList<Long> stepArray = new ArrayList<>();
 
     public void create() {
-        String path = Constants.ROOT_DIR + "src/main/java/NetworkStructureFiles/activeNode.csv";
+        String path = "src/main/java/NetworkStructureFiles/activeNode.csv";
         try (
                 Writer writer = Files.newBufferedWriter(Paths.get(path));
                 CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader("Time", "ActiveNode", "ToActivate"))
@@ -74,7 +75,7 @@ public class NodeStateCSVGeneratorGaussian {
         XYChart inputPacketChart = QuickChart.getChart("Node State Gaussian", "Time", "Active Node Count",
                 "active node count", nodeStateCSVGenerator.getTimeArray(), nodeStateCSVGenerator.getActiveNodeCount());
         try {
-            BitmapEncoder.saveBitmapWithDPI(inputPacketChart, ROOT_DIR + "src/main/resources/generated/gaussian",
+            BitmapEncoder.saveBitmapWithDPI(inputPacketChart, "src/main/resources/generated/gaussian",
                     BitmapEncoder.BitmapFormat.PNG, 500);
         } catch (IOException e) {
             e.printStackTrace();

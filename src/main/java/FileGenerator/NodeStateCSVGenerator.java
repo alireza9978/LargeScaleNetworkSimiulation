@@ -14,7 +14,7 @@ import static constants.Constants.MINIMUM_ACTIVE_NODE_COUNT;
 public class NodeStateCSVGenerator {
 
     public void create() {
-        String path = Constants.ROOT_DIR + "src/main/java/NetworkStructureFiles/activeNode.csv";
+        String path = "src/main/java/NetworkStructureFiles/activeNode.csv";
         try (
                 Writer writer = Files.newBufferedWriter(Paths.get(path));
                 CSVPrinter csvPrinter = new CSVPrinter(writer, CSVFormat.DEFAULT.withHeader("Time", "ActiveNode", "ToActivate"))
