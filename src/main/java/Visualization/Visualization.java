@@ -5,7 +5,6 @@ import Models.Server;
 import Models.StatsModels.EndToEndDelay;
 import Models.Switch;
 import Models.VirtualMachine;
-import constants.Constants;
 import constants.NodeType;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -78,6 +77,8 @@ public class Visualization {
                 if (tempVirtualMachines != null) {
                     vmUtilization[i][j].add(tempVirtualMachines.getUtilization());
                     endToEndDelay = endToEndDelay.merge(tempVirtualMachines.getEndToEndDelay());
+                } else {
+                    vmUtilization[i][j].add(-1f);
                 }
             }
         }
@@ -168,7 +169,7 @@ public class Visualization {
             headers.add("Time");
             headers.add("ActiveNodeCount");
 
-            ArrayList<Float> delay = new ArrayList<>();
+            ArrayList<Double> delay = new ArrayList<>();
             headers.add("End-to-End Delay");
             for (EndToEndDelay endToEndDelay : endToEndDelays
             ) {
@@ -293,7 +294,7 @@ public class Visualization {
                 headers.add("servers_" + i + "_input_packets");
                 headers.add("servers_" + i + "_utilization");
                 for (int j = 0; j < vmUtilization[i].length; j++) {
-                    if (vmUtilization[i][j] != null) {
+                    if (vmUtilization[i][j] != null && vmUtilization[i][j].size() > 0) {
                         headers.add("servers_" + i + "_vm_" + j);
                     }
                 }
@@ -311,7 +312,7 @@ public class Visualization {
                         objects.add(serverUtilization[j].get(i));
                         for (int k = 0; k < vmUtilization[j].length; k++) {
                             if (vmUtilization[j][k] != null) {
-                                if (vmUtilization[j][k].size() > i) {
+                                if (vmUtilization[j][k].size() > i && vmUtilization[j][k].get(i) != -1) {
                                     objects.add(vmUtilization[j][k].get(i));
                                 }
                             }
@@ -340,7 +341,7 @@ public class Visualization {
             }
         }
         {
-            ArrayList<Float> delay = new ArrayList<>();
+            ArrayList<Double> delay = new ArrayList<>();
             for (EndToEndDelay endToEndDelay : endToEndDelays
             ) {
                 delay.add(endToEndDelay.getAverage());

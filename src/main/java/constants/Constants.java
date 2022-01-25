@@ -2,12 +2,12 @@ package constants;
 
 public class Constants {
 
-    public static final int MAX_SERVER_COUNT = 5;
-    public static final int MAX_VM_IN_SINGLE_SERVER_COUNT = 10;
+    public static final int MAX_SERVER_COUNT = 3;
+    public static final int MAX_VM_IN_SINGLE_SERVER_COUNT = 4;
     public static final int MAX_SWITCH_COUNT = 1000;
 
-    public static final int MAX_NODE_COUNT = 27_000;
-    public static final int MINIMUM_ACTIVE_NODE_COUNT = 1000;
+    public static final int MAX_NODE_COUNT = 120_000;
+    public static final int MINIMUM_ACTIVE_NODE_COUNT = 12000;
     public static final int NODE_ACTIVATION_STEPS_COUNT = 360;
 
     public static final int SWITCH_MAX_CONNECTION_COUNT = 32;
@@ -15,14 +15,14 @@ public class Constants {
 
     // classes packets size in b
     public static final int CLASS_ONE_SIZE = 2000;
-    public static final int CLASS_TWO_SIZE = 2000;
-    public static final int CLASS_THREE_SIZE = 2000;
-    public static final int CLASS_FOUR_SIZE = 2000;
+    public static final int CLASS_TWO_SIZE = 4000;
+    public static final int CLASS_THREE_SIZE = 4000;
+    public static final int CLASS_FOUR_SIZE = 6000;
 
     // classes packets count in second
-    public static final int CLASS_ONE_COUNT = 1;
-    public static final int CLASS_TWO_COUNT = 2;
-    public static final int CLASS_THREE_COUNT = 4;
+    public static final int CLASS_ONE_COUNT = 4;
+    public static final int CLASS_TWO_COUNT = 3;
+    public static final int CLASS_THREE_COUNT = 2;
     public static final int CLASS_FOUR_COUNT = 1;
 
     // link speeds
@@ -56,34 +56,18 @@ public class Constants {
     public static final int CLASS_FOUR_CYCLE = (int) (CLOCK_IN_SECOND / CLASS_FOUR_COUNT);
 
     // probability of belonging to a class
-    public static final float CLASS_ONE_PROBABILITY = 0.1f;
-    public static final float CLASS_TWO_PROBABILITY = 0.2f;
-    public static final float CLASS_THREE_PROBABILITY = 0.3f;
-    public static final float CLASS_FOUR_PROBABILITY = 0.4f;
+    public static final float CLASS_ONE_PROBABILITY = 0.25f;
+    public static final float CLASS_TWO_PROBABILITY = 0.17f;
+    public static final float CLASS_THREE_PROBABILITY = 0.25f;
+    public static final float CLASS_FOUR_PROBABILITY = 0.33f;
 
     public static final String TEST_DIR = "src/main/resources/tests/";
     public static final String FIGURE_DIR = "src/main/resources/charts/";
     public static final String GRAPH_DIR = "src/main/resources/graphs/";
     //    public static final String ROOT_DIR = "/home/ippbx/IdeaProjects/LargeScaleNetworkSimiulation/";
-//    public static final String ROOT_DIR = "/home/alireza/projects/java/largeScaleNetworkSimulation/";
-//    public static final String ROOT_DIR = "C:\\Users\\Alireza\\IdeaProjects\\LargeScaleNetworkSimulation\\";
+    //    public static final String ROOT_DIR = "/home/alireza/projects/java/largeScaleNetworkSimulation/";
+    //    public static final String ROOT_DIR = "C:\\Users\\Alireza\\IdeaProjects\\LargeScaleNetworkSimulation\\";
 
-    public static int calculateMaxPacket() {
-        double packetCountInSecond = (CLASS_ONE_COUNT * CLASS_ONE_PROBABILITY * MAX_NODE_COUNT) +
-                (CLASS_TWO_COUNT * CLASS_TWO_PROBABILITY * MAX_NODE_COUNT) +
-                (CLASS_THREE_COUNT * CLASS_THREE_PROBABILITY * MAX_NODE_COUNT) +
-                (CLASS_FOUR_COUNT * CLASS_FOUR_PROBABILITY * MAX_NODE_COUNT);
-        float averagePacketSize = 2000;
-        int connectionConstraint = (int) (SERVER_LINK_SPEED / averagePacketSize);
-        return Math.min((int) packetCountInSecond / 3, connectionConstraint);
-    }
-
-    // packets that each server can process in a second
-    public static final long SERVER_MAX_PROCESSING_PACKET_IN_SECOND = calculateMaxPacket();
-    public static final long SERVER_MAX_PROCESSING_PACKET_IN_CYCLE = SERVER_MAX_PROCESSING_PACKET_IN_SECOND / TIME_RATIO;
-
-    // packets that each vm can process in a second
-    public static final long MAX_VM_PACKET_COUNT_PROCESS_SPEED = SERVER_MAX_PROCESSING_PACKET_IN_CYCLE / 4;
     public static final int MAX_BUFFER_PACKET_COUNT = 100;
 
     // Recursive function to return gcd of a and b

@@ -2,6 +2,8 @@ package constants;
 
 import java.util.Random;
 
+import static constants.Constants.*;
+
 public enum NodeType {
 
     health("health"),
@@ -65,18 +67,16 @@ public enum NodeType {
 
     public static NodeType getInstanceRandom() {
         int tempId = Math.round(random.nextFloat() * 100);
-//        0~10 powerConsumption
-//        10~30 securityCamera
-//        30~60 traffic
-//        60~100 health
-        if (tempId < 10) {
-            return powerConsumption;
-        } else if (tempId < 30) {
-            return securityCamera;
-        } else if (tempId < 60) {
-            return traffic;
-        } else if (tempId < 100) {
+        if (tempId < CLASS_ONE_PROBABILITY * 100) {
             return health;
+        } else if (tempId < (CLASS_ONE_PROBABILITY + CLASS_TWO_PROBABILITY) * 100) {
+            return traffic;
+        } else if (tempId < (CLASS_ONE_PROBABILITY + CLASS_TWO_PROBABILITY +
+                CLASS_THREE_PROBABILITY) * 100) {
+            return securityCamera;
+        } else if (tempId < (CLASS_ONE_PROBABILITY + CLASS_TWO_PROBABILITY +
+                CLASS_THREE_PROBABILITY + CLASS_FOUR_PROBABILITY) * 100) {
+            return powerConsumption;
         }
         return health;
     }
@@ -123,7 +123,7 @@ public enum NodeType {
         return -1;
     }
 
-    public static int getStartDelay(){
+    public static int getStartDelay() {
         return random.nextInt((int) Constants.CLOCK_IN_SECOND);
     }
 

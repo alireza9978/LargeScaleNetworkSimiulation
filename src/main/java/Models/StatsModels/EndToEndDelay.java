@@ -27,13 +27,13 @@ public class EndToEndDelay {
         return totalDelay[type] / (float) packetCount[type];
     }
 
-    public float getAverage() {
-        long sumDelay = 0;
+    public double getAverage() {
+        double sumDelay = 0;
         long sumCount = 0;
         for (int i = 0; i < NodeType.getCount(); i++) {
             sumDelay += totalDelay[i];
             sumCount += packetCount[i];
         }
-        return (float) sumDelay / (float) sumCount;
+        return sumDelay / (double) sumCount;
     }
 }
