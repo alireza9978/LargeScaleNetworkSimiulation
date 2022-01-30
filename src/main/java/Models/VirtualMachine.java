@@ -7,10 +7,13 @@ import constants.NodeType;
 public class VirtualMachine implements Receiver {
 
     private final NodeType type;
-    private int cycleProcessedPackets = 0;
+    private long cycleProcessedPackets = 0;
+    private int cycleDroppedPackets = 0;
     public final int listeningPort;
     public final int id;
     public long clock = 1;
+    public long passedClock = 0;
+    public boolean turnOn = false;
     private static int ID = 0;
     private EndToEndDelay endToEndDelay = new EndToEndDelay();
 
@@ -21,32 +24,41 @@ public class VirtualMachine implements Receiver {
         ID++;
     }
 
+    public void turnOn(int clock) {
+        this.clock = clock;
+        this.turnOn = true;
+    }
+
+    public void turnOff() {
+        this.turnOn = false;
+    }
+
     @Override
     public void receive(Packet packet) {
-        if (cycleProcessedPackets >= Constants.MAX_VM_PACKET_COUNT_PROCESS_SPEED) {
-            return;
-        }
         if (packet.getSender().getType().equals(type)) {
-            cycleProcessedPackets += 1;
-            endToEndDelay.addPacket(packet.getEndToEndDelay(clock), packet.getSender().getType().toInt());
+            if (cycleProcessedPackets < Constants.MAX_VM_INPUT_PACKET_SIZE_IN_SECOND - packet.getSize()){
+                cycleProcessedPackets += packet.getSize();
+                endToEndDelay.addPacket(packet.getEndToEndDelay(clock), packet.getSender().getType().toInt());
+            }else{
+                cycleDroppedPackets++;
+            }
         } else {
             System.out.println("VM id=" + id + " has a wrong input packet");
         }
     }
 
-    public void simulate(long clock) {
-        this.clock = clock;
-    }
-
-    public float getUsage() {
-        return ((float) cycleProcessedPackets) / Constants.MAX_VM_PACKET_COUNT_PROCESS_SPEED;
+    public void simulate() {
+        if (turnOn) {
+            passedClock++;
+            clock++;
+        }
     }
 
     public NodeType getType() {
         return type;
     }
 
-    public int getCycleProcessedPackets() {
+    public long getCycleProcessedPackets() {
         return cycleProcessedPackets;
     }
 
@@ -63,7 +75,7 @@ public class VirtualMachine implements Receiver {
     }
 
     public Float getUtilization() {
-        return (float) (cycleProcessedPackets) / (float) Constants.MAX_VM_PACKET_COUNT_PROCESS_SPEED;
+        return (float) (cycleProcessedPackets) / (float) (Constants.MAX_VM_INPUT_PACKET_SIZE_IN_CLOCK * passedClock);
     }
 
     public EndToEndDelay getEndToEndDelay() {
@@ -71,8 +83,13 @@ public class VirtualMachine implements Receiver {
     }
 
     public void resetDataCycle() {
+        passedClock = 0;
         cycleProcessedPackets = 0;
+        cycleDroppedPackets = 0;
         this.endToEndDelay = new EndToEndDelay();
     }
 
+    public long getCyclePacketsCount() {
+        return (cycleProcessedPackets / type.getSize()) + cycleDroppedPackets;
+    }
 }

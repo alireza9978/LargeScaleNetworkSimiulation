@@ -148,6 +148,12 @@ public class Network {
             }
         }
 
+        for (Server server : servers)
+            for (VirtualMachine vm : server.getVirtualMachines()) {
+                if (vm != null)
+                    vm.turnOn(1);
+            }
+
         int activationPointer = 0;
         activationPointer = updateNodesActivationState(controller, activationPointer, 0);
         int hour = 0;
@@ -165,9 +171,7 @@ public class Network {
 
             Arrays.stream(switches).forEachOrdered(Switch::run);
 
-            for (Server server : servers) {
-                server.run(clock);
-            }
+            Arrays.stream(servers).forEachOrdered(Server::run);
 
             if (clock % CHECK_NODE_ACTIVATION_CLOCK == 0) {
                 activationPointer = updateNodesActivationState(controller, activationPointer, clock);

@@ -2,15 +2,17 @@ package Models;
 
 import constants.Constants;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
-public class Server implements Receiver {
+public class Server implements Receiver, Runnable {
 
     private final int id;
     private static int ID = 0;
     private final VirtualMachine[] virtualMachines;
     private int virtualMachinesCount = 0;
-    private long cycleProcessedPackets = 0;
+    private long passedClocks = 0;
+    private ArrayList<Packet> inputPackets = new ArrayList<>();
 
     public Server() {
         this.id = ID;
@@ -37,17 +39,32 @@ public class Server implements Receiver {
     }
 
     @Override
-    public void receive(Packet packet) {
-        virtualMachines[packet.getSender().getType().toInt()].receive(packet);
-        cycleProcessedPackets += 1;
+    synchronized public void receive(Packet packet) {
+        if (packet == null) {
+            System.out.println("null income");
+        } else
+            inputPackets.add(packet);
     }
 
-    public void run(long clock) {
-        for (VirtualMachine virtualMachine : virtualMachines) {
-            if (virtualMachine != null) {
-                virtualMachine.simulate(clock);
+    @Override
+    public void run() {
+        for (Packet packet : inputPackets) {
+            if (packet != null) {
+                int packetType = packet.getSender().getType().toInt();
+                VirtualMachine targetVM = virtualMachines[packetType];
+                targetVM.receive(packet);
+            } else {
+                System.out.println("null packet received");
             }
         }
+        inputPackets = new ArrayList<>();
+
+        for (VirtualMachine virtualMachine : virtualMachines) {
+            if (virtualMachine != null) {
+                virtualMachine.simulate();
+            }
+        }
+        passedClocks++;
     }
 
     @Override
@@ -58,16 +75,19 @@ public class Server implements Receiver {
                 '}';
     }
 
-    public Long getCyclePackets() {
-        return cycleProcessedPackets;
-    }
 
     public Float getUtilization() {
-        return (float) (cycleProcessedPackets) / (float) Constants.SERVER_MAX_PROCESSING_PACKET_IN_CYCLE;
+        long cycleProcessedPackets = 0;
+        for (VirtualMachine virtualMachine : virtualMachines) {
+            if (virtualMachine != null) {
+                cycleProcessedPackets += virtualMachine.getCycleProcessedPackets();
+            }
+        }
+        return (float) (cycleProcessedPackets) / (float) (Constants.MAX_SERVER_INPUT_PACKET_SIZE_IN_CLOCK * passedClocks);
     }
 
     public void resetDataCycle(){
-        cycleProcessedPackets = 0;
+        passedClocks = 0;
         for (VirtualMachine virtualMachine : virtualMachines) {
             if (virtualMachine != null) {
                 virtualMachine.resetDataCycle();
@@ -85,5 +105,15 @@ public class Server implements Receiver {
 
     public int getId() {
         return id;
+    }
+
+    public Long getCyclePackets() {
+        long cyclePackets = 0;
+        for (VirtualMachine virtualMachine : virtualMachines) {
+            if (virtualMachine != null) {
+                cyclePackets += virtualMachine.getCyclePacketsCount();
+            }
+        }
+        return cyclePackets;
     }
 }

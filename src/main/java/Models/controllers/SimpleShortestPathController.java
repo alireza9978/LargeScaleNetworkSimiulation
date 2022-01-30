@@ -73,7 +73,12 @@ public class SimpleShortestPathController extends Controller {
     @Override
     public void updatePath(Network network, ArrayList<Node> activatedNode, ArrayList<Node> deactivatedNode) {
         for (Node node : activatedNode) {
-            setPathBFS(network, node.getConnection().getId(), node.id, node.getTargetServer());
+            if (node == null){
+                System.out.println("here");
+            }else if (node.getConnection() == null){
+                System.out.println("here2");
+            }else
+                setPathBFS(network, node.getConnection().getId(), node.id, node.getTargetServer());
         }
     }
 
