@@ -124,7 +124,7 @@ public enum NodeType {
     }
 
     public static int getStartDelay() {
-        return random.nextInt((int) Constants.CLOCK_IN_SECOND);
+        return random.nextInt((int) (Constants.CLOCK_IN_SECOND / TIME_RATIO));
     }
 
 }

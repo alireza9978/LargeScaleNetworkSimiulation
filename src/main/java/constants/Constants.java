@@ -7,8 +7,8 @@ public class Constants {
     public static final int MAX_VM_IN_SINGLE_SERVER_COUNT = TRAFFIC_CLASS_COUNT;
     public static final int MAX_SWITCH_COUNT = 1000;
 
-    public static final int MAX_NODE_COUNT = 10_980;
-    public static final int MINIMUM_ACTIVE_NODE_COUNT = 980;
+    public static final int MAX_NODE_COUNT = 10_962;
+    public static final int MINIMUM_ACTIVE_NODE_COUNT = 962;
     public static final int NODE_ACTIVATION_STEPS_COUNT = 360;
 
     public static final int SWITCH_MAX_CONNECTION_COUNT = 32;
@@ -63,10 +63,10 @@ public class Constants {
     public static final long MAX_VM_INPUT_PACKET_SIZE_IN_CLOCK = MAX_VM_INPUT_PACKET_SIZE_IN_SECOND / CLOCK_IN_SECOND;
 
     // classes packets generation speed in clock
-    public static final int CLASS_ONE_CYCLE = (int) Math.ceil(((double) CLOCK_IN_SECOND / TIME_RATIO) / CLASS_ONE_COUNT);
-    public static final int CLASS_TWO_CYCLE = (int) Math.ceil(((double) CLOCK_IN_SECOND / TIME_RATIO) / CLASS_TWO_COUNT);
-    public static final int CLASS_THREE_CYCLE = (int) Math.ceil(((double) CLOCK_IN_SECOND / TIME_RATIO) / CLASS_THREE_COUNT);
-    public static final int CLASS_FOUR_CYCLE = (int) Math.ceil(((double) CLOCK_IN_SECOND / TIME_RATIO) / CLASS_FOUR_COUNT);
+    public static final int CLASS_ONE_CYCLE = (int) Math.floor(((double) CLOCK_IN_SECOND / TIME_RATIO) / CLASS_ONE_COUNT);
+    public static final int CLASS_TWO_CYCLE = (int) Math.floor(((double) CLOCK_IN_SECOND / TIME_RATIO) / CLASS_TWO_COUNT);
+    public static final int CLASS_THREE_CYCLE = (int) Math.floor(((double) CLOCK_IN_SECOND / TIME_RATIO) / CLASS_THREE_COUNT);
+    public static final int CLASS_FOUR_CYCLE = (int) Math.floor(((double) CLOCK_IN_SECOND / TIME_RATIO) / CLASS_FOUR_COUNT);
 
     public static final String TEST_DIR = "src/main/resources/tests/";
     public static final String FIGURE_DIR = "src/main/resources/charts/";
